@@ -1,0 +1,2220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kwata Games</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#16273F">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0F1B2D; --surface:#16273F; --surface-2:#1E3352; --line:#2B4468;
+  --gold:#F2A93B; --text:#EAF0FA; --text-dim:#9FB2CC;
+  --green:#4FAE6B; --red:#E15A5A; --blue:#4C8DFF; --yellow:#E8C13A;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{background:radial-gradient(ellipse at top,#16283F 0%,var(--bg) 60%); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; padding-bottom:40px;}
+h1,h2,h3,.display{font-family:'Baloo 2',sans-serif;}
+button{font-family:inherit; cursor:pointer; border:none;}
+.hidden{display:none !important;}
+.topbar{display:flex; align-items:center; justify-content:space-between; padding:16px 18px; background:var(--surface); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:20;}
+.brand{display:flex; align-items:center; gap:10px;}
+.brand .mark{width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,var(--gold),#C97A1F); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; color:#1B2A4A;}
+.brand .name{font-size:19px; font-weight:700;}
+.wallet-chip{display:flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--line); border-radius:100px; padding:7px 14px; font-size:14px; font-weight:600;}
+.wallet-chip .coin{color:var(--gold);}
+.gear-btn{background:var(--surface-2); border:1px solid var(--line); width:36px; height:36px; border-radius:10px; color:var(--text-dim); font-size:17px; display:flex; align-items:center; justify-content:center;}
+.wrap{max-width:640px; margin:0 auto; padding:20px 16px;}
+.notice{background:rgba(76,141,255,0.1); border:1px solid rgba(76,141,255,0.35); color:#BFD4FF; border-radius:12px; padding:12px 14px; font-size:13px; line-height:1.5; margin-bottom:18px;}
+.notice b{color:#fff;}
+.section-title{font-size:15px; text-transform:uppercase; letter-spacing:1px; color:var(--text-dim); margin:22px 0 10px; font-weight:600;}
+.mode-toggle{display:flex; gap:6px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:5px;}
+.mode-btn{flex:1; padding:11px 2px; border-radius:10px; font-weight:700; font-size:12.5px; color:var(--text-dim); background:transparent; white-space:nowrap;}
+.mode-btn.active{background:var(--gold); color:#1B2A4A;}
+.game-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.game-card{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px 14px; text-align:left; color:var(--text); display:flex; flex-direction:column; gap:8px; min-height:118px;}
+.game-card:active{transform:scale(0.97);}
+.game-card .icon{font-size:28px;}
+.game-card .title{font-family:'Baloo 2'; font-size:17px; font-weight:700;}
+.game-card .desc{font-size:12px; color:var(--text-dim); line-height:1.4;}
+.profiles-row{display:flex; gap:10px; margin-bottom:6px;}
+.profile-card{flex:1; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:12px; font-size:13px;}
+.profile-card .pname{font-weight:700; margin-bottom:4px;}
+.profile-card .pbal{color:var(--gold); font-weight:700; font-size:15px;}
+.link-btn{background:none; color:var(--blue); font-size:13px; font-weight:600; padding:4px 0; text-decoration:underline;}
+.modal-overlay{position:fixed; inset:0; background:rgba(6,12,22,0.72); display:flex; align-items:flex-end; justify-content:center; z-index:50;}
+.modal{background:var(--surface); width:100%; max-width:640px; border-radius:20px 20px 0 0; padding:22px 20px 26px; border-top:1px solid var(--line); max-height:88vh; overflow-y:auto;}
+.modal h3{font-size:19px; margin-bottom:14px;}
+.field{margin-bottom:14px;}
+.field label{display:block; font-size:12px; color:var(--text-dim); margin-bottom:6px; font-weight:600;}
+.field input, .field select{width:100%; background:var(--surface-2); border:1px solid var(--line); color:var(--text); padding:11px 12px; border-radius:10px; font-size:15px;}
+.btn{width:100%; padding:13px; border-radius:12px; font-weight:700; font-size:15px;}
+.btn-primary{background:var(--gold); color:#1B2A4A;}
+.btn-secondary{background:var(--surface-2); color:var(--text); border:1px solid var(--line);}
+.btn-ghost{background:transparent; color:var(--text-dim); font-size:13px; text-align:center; display:block; margin:10px auto 0;}
+.btn-row{display:flex; gap:10px;}
+.btn-row .btn{flex:1;}
+.stake-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:14px;}
+.stake-chip{background:var(--surface-2); border:1px solid var(--line); color:var(--text); padding:9px 0; border-radius:10px; font-size:13px; font-weight:600;}
+.stake-chip.active{background:var(--gold); color:#1B2A4A; border-color:var(--gold);}
+.pot-preview{background:var(--surface-2); border-radius:12px; padding:12px 14px; font-size:13px; color:var(--text-dim); margin-bottom:16px; line-height:1.7;}
+.pot-preview b{color:var(--text); font-weight:700;}
+.pot-preview .cut{color:var(--gold);}
+.code-box{background:var(--surface-2); border:1px dashed var(--gold); border-radius:12px; padding:16px; text-align:center; font-size:13px; word-break:break-all; margin-bottom:12px;}
+.code-box .code{font-family:monospace; font-size:15px; color:var(--gold); font-weight:700; margin-top:6px; display:block;}
+.spinner-line{display:flex; align-items:center; gap:8px; justify-content:center; font-size:13px; color:var(--text-dim); margin:10px 0;}
+.dot-anim{display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--gold); animation:pulse 1s infinite ease-in-out;}
+@keyframes pulse{0%,100%{opacity:.3} 50%{opacity:1}}
+.game-screen{padding:16px;}
+.game-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+.back-btn{background:var(--surface-2); border:1px solid var(--line); color:var(--text); padding:8px 12px; border-radius:10px; font-size:13px; font-weight:600;}
+.turn-banner{text-align:center; font-family:'Baloo 2'; font-size:15px; margin-bottom:14px; padding:10px; border-radius:12px; background:var(--surface); border:1px solid var(--line);}
+.turn-banner .p1{color:var(--red);} .turn-banner .p2{color:var(--blue);}
+#board-area{display:flex; justify-content:center; margin-bottom:16px;}
+.ttt-board{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; width:280px; padding:10px; background:linear-gradient(160deg,var(--surface),var(--surface-2)); border-radius:18px; box-shadow:0 12px 30px rgba(0,0,0,0.4);}
+.ttt-cell{aspect-ratio:1; background:var(--bg); border:1px solid var(--line); border-radius:12px; font-size:40px; font-weight:800; display:flex; align-items:center; justify-content:center; box-shadow:inset 0 2px 4px rgba(0,0,0,0.4);}
+.ttt-cell.x{color:var(--red); text-shadow:0 0 12px rgba(225,90,90,0.6);} .ttt-cell.o{color:var(--blue); text-shadow:0 0 12px rgba(76,141,255,0.6);}
+.p4-board{background:linear-gradient(160deg,#123061,#0D2547); border-radius:16px; padding:10px; display:grid; grid-template-columns:repeat(7,1fr); gap:6px; width:100%; max-width:340px; box-shadow:0 12px 30px rgba(0,0,0,0.4);}
+.p4-cell{aspect-ratio:1; background:var(--bg); border-radius:50%; border:1px solid rgba(255,255,255,0.06); box-shadow:inset 0 3px 5px rgba(0,0,0,0.5);}
+.p4-cell.r{background:radial-gradient(circle at 35% 30%,#ff8a8a,var(--red)); box-shadow:0 2px 4px rgba(0,0,0,0.3);} .p4-cell.j{background:radial-gradient(circle at 35% 30%,#ffe19a,var(--gold)); box-shadow:0 2px 4px rgba(0,0,0,0.3);}
+.p4-cols{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; width:100%; max-width:340px; margin-bottom:8px;}
+.p4-col-btn{background:var(--surface-2); border:1px solid var(--line); color:var(--text-dim); border-radius:8px; padding:6px 0; font-size:12px;}
+.dames-board, .chess-board{display:grid; grid-template-columns:repeat(8,1fr); width:320px; border:4px solid var(--surface-2); border-radius:10px; overflow:hidden; box-shadow:0 14px 34px rgba(0,0,0,0.45);}
+.dames-cell, .chess-cell{aspect-ratio:1; display:flex; align-items:center; justify-content:center; position:relative;}
+.dames-cell.dark, .chess-cell.dark{background:#3A2A1E;} .dames-cell.light, .chess-cell.light{background:#C9AE8C;}
+.dames-cell.selected, .chess-cell.selected{outline:3px solid var(--gold); outline-offset:-3px;}
+.dames-cell.legal::after, .chess-cell.legal::after{content:''; position:absolute; top:50%; left:50%; width:26%; height:26%; transform:translate(-50%,-50%); border-radius:50%; background:rgba(242,169,59,0.85); box-shadow:0 0 0 4px rgba(242,169,59,0.25);}
+.pawn{width:70%; height:70%; border-radius:50%; box-shadow:inset 0 -3px 6px rgba(0,0,0,0.4);}
+.pawn.p1{background:radial-gradient(circle at 35% 30%,#ff8a8a,var(--red));}
+.pawn.p2{background:radial-gradient(circle at 35% 30%,#9fc2ff,var(--blue));}
+.pawn.king::after{content:"★"; display:block; text-align:center; color:#fff; font-size:12px; line-height:1;}
+.chess-piece{font-size:34px; line-height:1; user-select:none;}
+.chess-piece.p1{color:#fff; text-shadow:0 0 2px #000, 0 1px 1px #000;}
+.chess-piece.p2{color:#1a1a1a; text-shadow:0 0 1px #fff;}
+.bataille-zone{display:flex; justify-content:space-around; align-items:center; width:100%; max-width:360px; margin-bottom:10px;}
+.card-slot{width:70px; height:96px; background:var(--surface); border:1px solid var(--line); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:800;}
+.card-slot.red{color:var(--red);} .card-slot.black{color:var(--text);}
+.pile-count{text-align:center; font-size:13px; color:var(--text-dim); margin-top:6px;}
+.battle-log{background:var(--surface-2); border-radius:10px; padding:10px 12px; font-size:12px; color:var(--text-dim); max-height:120px; overflow-y:auto; margin-top:12px; line-height:1.8;}
+.ludo-wrap{width:350px; aspect-ratio:1; display:grid; grid-template-columns:repeat(15,1fr); grid-template-rows:repeat(15,1fr); background:#0B1830; border-radius:16px; overflow:hidden; border:3px solid #2C4570; box-shadow:0 16px 36px rgba(0,0,0,0.5);}
+.ludo-cell{position:relative; border:0.5px solid rgba(255,255,255,0.05);}
+.ludo-cell.path{background:#F4EFE3;}
+.ludo-cell.center{background:conic-gradient(from 0deg, #C0392B 0 25%, #27633F 0 50%, #1F4E8C 0 75%, #B8952E 0 100%);}
+.ludo-cell.mid{background:#16273F;}
+.ludo-cell.plain{background:#0B1830;}
+.ludo-cell.home-red{background:linear-gradient(160deg,#F7C9C9,#F0A7A7);}
+.ludo-cell.home-yellow{background:linear-gradient(160deg,#FBEBB0,#F5DA82);}
+.ludo-cell.home-green{background:linear-gradient(160deg,#C7EAD3,#9ED6B4);}
+.ludo-cell.home-blue{background:linear-gradient(160deg,#C7DBFF,#9EBBF0);}
+.ludo-cell.yard-red{background:radial-gradient(circle at 30% 30%,#E0645A,#B8332A);}
+.ludo-cell.yard-green{background:radial-gradient(circle at 30% 30%,#3E9468,#1F5138);}
+.ludo-cell.yard-blue{background:radial-gradient(circle at 30% 30%,#3E77C4,#173C6E);}
+.ludo-cell.yard-yellow{background:radial-gradient(circle at 30% 30%,#DDBA52,#9C7A1F);}
+.ludo-cell.safe::after{content:'⭐'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:11px; opacity:0.5; z-index:1; pointer-events:none;}
+.ludo-token{position:absolute; top:12%; left:12%; width:76%; height:76%; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 5px rgba(0,0,0,0.6), inset 0 -3px 4px rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center; font-size:9px; color:#fff; font-weight:800; z-index:2;}
+.ludo-token.red{background:radial-gradient(circle at 35% 30%,#ff8a8a,var(--red));} .ludo-token.yellow{background:radial-gradient(circle at 35% 30%,#fff0b0,var(--yellow)); color:#1B2A4A;}
+.ludo-token.green{background:radial-gradient(circle at 35% 30%,#8ee6ab,var(--green));} .ludo-token.blue{background:radial-gradient(circle at 35% 30%,#9fc2ff,var(--blue));}
+.dice-row{display:flex; align-items:center; justify-content:center; gap:14px; margin-top:14px;}
+.dice{width:58px; height:58px; background:linear-gradient(160deg,#fff,#dfe6ee); color:#1B2A4A; border:1px solid var(--line); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:800; box-shadow:0 6px 14px rgba(0,0,0,0.4);}
+.controls-hint{font-size:12px; color:var(--text-dim); text-align:center; margin-top:8px; line-height:1.5;}
+.result-box{text-align:center; padding:20px;}
+.result-box .big{font-family:'Baloo 2'; font-size:26px; margin-bottom:8px;}
+.result-box .amount{font-size:34px; font-weight:800; color:var(--gold); margin:10px 0;}
+.breakdown{background:var(--surface-2); border-radius:12px; padding:14px; text-align:left; font-size:13px; line-height:2; margin:16px 0;}
+.breakdown span{float:right; font-weight:700;}
+footer.tiny{text-align:center; font-size:11px; color:var(--text-dim); margin-top:30px; padding:0 20px; line-height:1.6;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><div class="mark">K</div><div class="name">Kwata Games</div></div>
+  <div style="display:flex; align-items:center; gap:8px;">
+    <div class="wallet-chip" id="wallet-chip"><span class="coin">●</span><span id="wallet-text">Caisse : 0</span></div>
+    <button class="gear-btn" id="settings-btn">⚙</button>
+  </div>
+</div>
+
+<div class="wrap" id="hub-view">
+  <div class="notice">
+    <b>Monnaie virtuelle (jetons).</b> Aucune transaction bancaire réelle n'a lieu ici. Pour de l'argent réel, une intégration avec un agrégateur de paiement agréé serait nécessaire.
+  </div>
+
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="mode-local-btn">📱 Ce téléphone</button>
+    <button class="mode-btn" id="mode-online-btn">🌐 En ligne</button>
+    <button class="mode-btn" id="mode-ai-btn">🤖 Contre l'IA</button>
+  </div>
+
+  <div id="local-panel" style="margin-top:16px;">
+    <div class="section-title">Joueurs de la partie</div>
+    <div class="profiles-row">
+      <div class="profile-card"><div class="pname" id="p1-name">Joueur 1</div><div class="pbal" id="p1-bal">0 jetons</div></div>
+      <div class="profile-card"><div class="pname" id="p2-name">Joueur 2</div><div class="pbal" id="p2-bal">0 jetons</div></div>
+    </div>
+    <button class="link-btn" id="edit-profiles">Modifier les joueurs / recharger des jetons</button>
+  </div>
+
+  <div id="online-panel" class="hidden" style="margin-top:16px;">
+    <div class="profile-card" style="margin-bottom:10px;">
+      <div class="pname">Toi</div>
+      <div class="pbal" id="online-bal">0 jetons</div>
+    </div>
+    <button class="link-btn" id="edit-online-wallet">Voir mon solde / renflouer si besoin</button>
+  </div>
+
+  <div class="section-title">Choisir un jeu</div>
+  <div class="game-grid">
+    <button class="game-card" data-game="morpion"><div class="icon">✕⭕</div><div class="title">Morpion</div><div class="desc">3 alignés gagnent.</div></button>
+    <button class="game-card" data-game="puissance4"><div class="icon">🔴🟡</div><div class="title">Puissance 4</div><div class="desc">Aligne 4 jetons.</div></button>
+    <button class="game-card" data-game="dames"><div class="icon">⚫⚪</div><div class="title">Les Dames</div><div class="desc">Capture tous les pions.</div></button>
+    <button class="game-card" data-game="echecs"><div class="icon">♟️♛</div><div class="title">Échecs</div><div class="desc">Mets le roi adverse échec et mat.</div></button>
+    <button class="game-card" data-game="ludo"><div class="icon">🎲</div><div class="title">Ludo</div><div class="desc">Fais le tour du plateau.</div></button>
+    <button class="game-card" data-game="bataille"><div class="icon">🃏</div><div class="title">Bataille</div><div class="desc">La carte la plus forte gagne.</div></button>
+    <button class="game-card" data-game="hockey"><div class="icon">🏒</div><div class="title">Air Hockey</div><div class="desc">Marque 5 buts. Sur ce téléphone uniquement.</div></button>
+    <button class="game-card" data-game="awale"><div class="icon">🌰</div><div class="title">Awalé</div><div class="desc">Sème les graines, capture celles de l'adversaire.</div></button>
+    <button class="game-card" data-game="othello"><div class="icon">⚫⚪</div><div class="title">Othello</div><div class="desc">Encadre les pions adverses pour les retourner.</div></button>
+    <button class="game-card" data-game="nim"><div class="icon">🥢</div><div class="title">Nim</div><div class="desc">Ne prends pas le dernier bâtonnet !</div></button>
+  </div>
+
+  <footer class="tiny">Jeux du domaine public. Version démo à jetons virtuels.</footer>
+</div>
+
+<div class="game-screen hidden" id="game-view">
+  <div class="game-header">
+    <button class="back-btn" id="quit-game">← Quitter</button>
+    <div style="font-weight:700; font-family:'Baloo 2'; font-size:16px;" id="game-title"></div>
+    <div style="width:70px;"></div>
+  </div>
+  <div class="turn-banner" id="turn-banner"></div>
+  <div id="board-area"></div>
+  <div id="extra-area"></div>
+</div>
+
+<div class="game-screen hidden" id="result-view">
+  <div class="result-box">
+    <div class="big" id="result-title">🏆 Victoire !</div>
+    <div id="result-winner-name" style="color:var(--text-dim); font-size:14px;"></div>
+    <div class="amount" id="result-amount"></div>
+    <div class="breakdown" id="result-breakdown"></div>
+    <button class="btn btn-primary" id="result-home">Retour à l'accueil</button>
+  </div>
+</div>
+
+<!-- STAKE MODAL (mode local) -->
+<div class="modal-overlay hidden" id="stake-modal">
+  <div class="modal">
+    <h3 id="stake-title">Mise de la partie</h3>
+    <div class="field"><label>Montant misé par chaque joueur</label><input type="number" id="stake-input" placeholder="Ex : 200" min="1"></div>
+    <div class="stake-grid">
+      <button class="stake-chip" data-v="100">100</button>
+      <button class="stake-chip" data-v="200">200</button>
+      <button class="stake-chip" data-v="500">500</button>
+      <button class="stake-chip" data-v="1000">1000</button>
+    </div>
+    <div class="pot-preview" id="pot-preview"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="stake-cancel">Annuler</button>
+      <button class="btn btn-primary" id="stake-confirm">Lancer la partie</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI MODAL (mise + difficulté) -->
+<div class="modal-overlay hidden" id="ai-modal">
+  <div class="modal">
+    <h3 id="ai-title">Contre l'IA</h3>
+    <div class="field"><label>Ta mise</label><input type="number" id="ai-stake-input" placeholder="Ex : 200"></div>
+    <div class="field">
+      <label>Niveau de l'IA</label>
+      <div class="stake-grid" style="grid-template-columns:repeat(3,1fr);">
+        <button class="stake-chip" data-lvl="easy">Facile</button>
+        <button class="stake-chip active" data-lvl="medium">Moyen</button>
+        <button class="stake-chip" data-lvl="hard">Difficile</button>
+      </div>
+    </div>
+    <div class="pot-preview" id="ai-pot-preview"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="ai-cancel">Annuler</button>
+      <button class="btn btn-primary" id="ai-confirm">Lancer la partie</button>
+    </div>
+  </div>
+</div>
+
+<!-- ONLINE MODAL (créer / rejoindre) -->
+<div class="modal-overlay hidden" id="online-modal">
+  <div class="modal">
+    <h3 id="online-title">Jouer en ligne</h3>
+    <div id="online-choice">
+      <button class="btn btn-primary" id="online-create-btn" style="margin-bottom:10px;">Créer une partie</button>
+      <button class="btn btn-secondary" id="online-join-btn">Rejoindre avec un code</button>
+    </div>
+    <div id="online-create-form" class="hidden">
+      <div class="field"><label>Montant que chacun va miser</label><input type="number" id="online-stake-input" placeholder="Ex : 200"></div>
+      <button class="btn btn-primary" id="online-create-confirm">Créer la partie</button>
+    </div>
+    <div id="online-join-form" class="hidden">
+      <div class="field"><label>Colle le code reçu de l'autre joueur</label><input type="text" id="online-code-input" placeholder="Code de la partie"></div>
+      <button class="btn btn-primary" id="online-join-confirm">Rejoindre</button>
+    </div>
+    <div id="online-waiting" class="hidden">
+      <div class="code-box">Partagez ce code à l'autre joueur (WhatsApp, SMS...) :<span class="code" id="online-code-display"></span></div>
+      <button class="btn btn-secondary" id="online-copy-code" style="margin-bottom:12px;">Copier le code</button>
+      <div class="spinner-line"><span class="dot-anim"></span> En attente que l'adversaire rejoigne...</div>
+    </div>
+    <button class="btn-ghost" id="online-cancel">Annuler</button>
+  </div>
+</div>
+
+<!-- LUDO : choix 2 joueurs / salle à plusieurs -->
+<div class="modal-overlay hidden" id="ludo-choice-modal">
+  <div class="modal">
+    <h3>Ludo en ligne</h3>
+    <button class="btn btn-primary" id="ludo-choice-2p" style="margin-bottom:10px;">Partie rapide à 2 joueurs</button>
+    <button class="btn btn-secondary" id="ludo-choice-4p">Salle jusqu'à 4 joueurs</button>
+    <button class="btn-ghost" id="ludo-choice-cancel">Annuler</button>
+  </div>
+</div>
+
+<!-- LUDO : salle d'attente jusqu'à 4 joueurs -->
+<div class="modal-overlay hidden" id="ludo-lobby-modal">
+  <div class="modal">
+    <h3 id="ludo-lobby-title">Salle Ludo</h3>
+    <div id="ludo-lobby-choice">
+      <button class="btn btn-primary" id="ludo-lobby-create-btn" style="margin-bottom:10px;">Créer une salle</button>
+      <button class="btn btn-secondary" id="ludo-lobby-join-btn">Rejoindre avec un code</button>
+    </div>
+    <div id="ludo-lobby-create-form" class="hidden">
+      <div class="field"><label>Montant que chacun va miser</label><input type="number" id="ludo-lobby-stake-input" placeholder="Ex : 200"></div>
+      <div class="field"><label>Nombre maximum de joueurs</label>
+        <select id="ludo-lobby-max-select"><option value="2">2 joueurs</option><option value="3">3 joueurs</option><option value="4" selected>4 joueurs</option></select>
+      </div>
+      <button class="btn btn-primary" id="ludo-lobby-create-confirm">Créer la salle</button>
+    </div>
+    <div id="ludo-lobby-join-form" class="hidden">
+      <div class="field"><label>Colle le code reçu</label><input type="text" id="ludo-lobby-code-input" placeholder="Code de la salle"></div>
+      <button class="btn btn-primary" id="ludo-lobby-join-confirm">Rejoindre</button>
+    </div>
+    <div id="ludo-lobby-waiting" class="hidden">
+      <div class="code-box">Code de la salle (à partager) :<span class="code" id="ludo-lobby-code-display"></span></div>
+      <button class="btn btn-secondary" id="ludo-lobby-copy-code" style="margin-bottom:12px;">Copier le code</button>
+      <div id="ludo-lobby-players" style="margin-bottom:12px; font-size:14px; line-height:1.9;"></div>
+      <button class="btn btn-primary hidden" id="ludo-lobby-start-btn" style="margin-bottom:10px;">Lancer la partie</button>
+      <div class="spinner-line" id="ludo-lobby-wait-msg"><span class="dot-anim"></span> En attente...</div>
+    </div>
+    <button class="btn-ghost" id="ludo-lobby-cancel">Annuler</button>
+  </div>
+</div>
+
+<!-- PROFILES MODAL -->
+<div class="modal-overlay hidden" id="profiles-modal">
+  <div class="modal">
+    <h3>Joueurs & jetons</h3>
+    <div class="field"><label>Nom du joueur 1</label><input type="text" id="input-p1-name"></div>
+    <div class="field"><label>Solde joueur 1</label><input type="number" id="input-p1-bal"></div>
+    <div class="field"><label>Nom du joueur 2</label><input type="text" id="input-p2-name"></div>
+    <div class="field"><label>Solde joueur 2</label><input type="number" id="input-p2-bal"></div>
+    <div class="btn-row"><button class="btn btn-secondary" id="profiles-cancel">Annuler</button><button class="btn btn-primary" id="profiles-save">Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- ONLINE WALLET MODAL -->
+<div class="modal-overlay hidden" id="online-wallet-modal">
+  <div class="modal">
+    <h3>Mon solde (en ligne)</h3>
+    <div class="pot-preview">
+      Solde actuel : <b id="online-wallet-current">0</b> jetons.<br><br>
+      Pour éviter qu'un solde ne soit inventé sans raison, il n'est plus possible de taper un nombre à la main ici. Si ton solde tombe en dessous de <b id="online-wallet-cap-txt">500</b>, tu peux le renflouer une seule fois jusqu'à ce seuil. Au-delà, la seule façon d'augmenter ton solde est de <b>gagner des parties</b> (contre l'IA ou en ligne).
+    </div>
+    <button class="btn btn-primary" id="online-wallet-refill">Renflouer jusqu'à 500 jetons</button>
+    <button class="btn-ghost" id="online-wallet-cancel">Fermer</button>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay hidden" id="settings-modal">
+  <div class="modal">
+    <h3>Réglages de la plateforme</h3>
+    <div class="field">
+      <label>Commission prélevée sur chaque gain (%)</label>
+      <select id="rate-select"><option value="5">5%</option><option value="10">10%</option><option value="15">15%</option><option value="20">20%</option></select>
+    </div>
+    <div class="pot-preview">Caisse plateforme accumulée : <b id="house-total-display">0</b> jetons.</div>
+    <div class="btn-row"><button class="btn btn-secondary" id="settings-cancel">Fermer</button><button class="btn btn-primary" id="settings-save">Enregistrer</button></div>
+  </div>
+</div>
+
+<script>
+/* =================== JSONBIN (backend gratuit pour le mode en ligne) =================== */
+const JSONBIN_KEY = "$2a$10$5oRVDxOvFJlZcM4OwqJjZe5py8lF/R2.QZ8e6IVKKlRllvBMAa27W";
+const JSONBIN_BASE = "https://api.jsonbin.io/v3/b";
+async function fetchWithRetry(url, opts, tries){
+  tries = tries || 3;
+  for(let i=0;i<tries;i++){
+    try{
+      const controller = new AbortController();
+      const timer = setTimeout(()=>controller.abort(), 6000);
+      const r = await fetch(url, Object.assign({}, opts, {signal:controller.signal}));
+      clearTimeout(timer);
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r;
+    }catch(e){
+      if(i===tries-1) throw e;
+      await new Promise(res=>setTimeout(res, 700*(i+1)));
+    }
+  }
+}
+async function jbCreate(data){
+  const r = await fetchWithRetry(JSONBIN_BASE, {method:'POST', headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY}, body:JSON.stringify(data)});
+  const j = await r.json();
+  return j.metadata.id;
+}
+async function jbRead(id){
+  const r = await fetchWithRetry(JSONBIN_BASE+'/'+id+'/latest', {headers:{'X-Master-Key':JSONBIN_KEY}, cache:'no-store'});
+  const j = await r.json();
+  return j.record;
+}
+async function jbUpdate(id, data){
+  await fetchWithRetry(JSONBIN_BASE+'/'+id, {method:'PUT', headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY}, body:JSON.stringify(data)});
+}
+
+/* =================== STOCKAGE LOCAL =================== */
+const StorageAPI = (function(){
+  if(window.storage && typeof window.storage.get === 'function') return window.storage;
+  return {
+    async get(key){ const raw = localStorage.getItem(key); if(raw===null) throw new Error('not found'); return {key, value:raw}; },
+    async set(key, value){ localStorage.setItem(key, value); return {key, value}; }
+  };
+})();
+
+const state = { p1:{name:"Joueur 1", bal:1000}, p2:{name:"Joueur 2", bal:1000}, online:{bal:1000}, houseRate:5, houseBal:0, mode:'local', matchLock:false };
+async function saveState(){ try{ await StorageAPI.set('kwata:state', JSON.stringify(state)); }catch(e){} }
+async function loadState(){
+  try{ const r = await StorageAPI.get('kwata:state'); if(r && r.value) Object.assign(state, JSON.parse(r.value)); }catch(e){}
+  refreshHeader();
+}
+async function isMatchLocked(){
+  try{
+    const r = await StorageAPI.get('kwata:state');
+    if(r && r.value){ const s=JSON.parse(r.value); return !!s.matchLock; }
+  }catch(e){}
+  return !!state.matchLock;
+}
+function refreshHeader(){
+  document.getElementById('p1-name').textContent = state.p1.name;
+  document.getElementById('p2-name').textContent = state.p2.name;
+  document.getElementById('p1-bal').textContent = state.p1.bal + " jetons";
+  document.getElementById('p2-bal').textContent = state.p2.bal + " jetons";
+  document.getElementById('online-bal').textContent = state.online.bal + " jetons";
+  document.getElementById('house-total-display').textContent = state.houseBal;
+  document.getElementById('rate-select').value = state.houseRate;
+  document.getElementById('wallet-text').textContent = (state.mode==='online'||state.mode==='ai') ? ("Toi : "+state.online.bal) : ("Caisse : "+state.houseBal);
+}
+
+/* =================== NAVIGATION =================== */
+const hubView=document.getElementById('hub-view'), gameView=document.getElementById('game-view'), resultView=document.getElementById('result-view');
+function showHub(){ hubView.classList.remove('hidden'); gameView.classList.add('hidden'); resultView.classList.add('hidden'); Online.stopPolling(); Online.active=false; Online.meta=null; AI.active=false; if(typeof LudoLobby!=='undefined'){ stopLudoLobbyPolling(); LudoLobby.active=false; } }
+function showGame(){ hubView.classList.add('hidden'); gameView.classList.remove('hidden'); resultView.classList.add('hidden'); }
+function showResult(){ hubView.classList.add('hidden'); gameView.classList.add('hidden'); resultView.classList.remove('hidden'); }
+document.getElementById('quit-game').onclick = async ()=>{
+  if(LudoLobby.active){
+    if(!confirm("Si tu quittes, ta mise est perdue et tu sors de la partie. Les autres joueurs continuent sans toi. Continuer ?")) return;
+    try{
+      const room = await jbRead(LudoLobby.roomId);
+      const remaining = room.state.roles.filter(r=>r!==LudoLobby.myRole);
+      room.state.roles = remaining;
+      if(room.turn===LudoLobby.myRole) room.turn = remaining[0];
+      if(remaining.length===1){ room.status='finished'; room.winner=remaining[0]; }
+      room.updatedAt=Date.now();
+      await jbUpdate(LudoLobby.roomId, room);
+    }catch(e){}
+    stopLudoLobbyPolling(); LudoLobby.active=false; state.matchLock=false; saveState();
+    showHub();
+    return;
+  }
+  if(Online.active){
+    if(!confirm("Si tu quittes maintenant, ta mise sera perdue au profit de l'adversaire (qui sera prévenu). Continuer ?")) return;
+    await forfeitOnlineMatch();
+    state.matchLock=false; saveState();
+    showHub();
+    return;
+  }
+  if(AI.active){
+    if(confirm("Quitter la partie contre l'IA ? Ta mise te sera remboursée.")){
+      state.online.bal += currentStake; state.matchLock=false; saveState(); refreshHeader();
+      showHub();
+    }
+    return;
+  }
+  if(confirm("Quitter la partie en cours ? Les mises des deux joueurs seront remboursées.")){
+    state.p1.bal += currentStake; state.p2.bal += currentStake; state.matchLock=false; saveState(); refreshHeader();
+    showHub();
+  }
+};
+async function forfeitOnlineMatch(){
+  if(!Online.roomId) return;
+  try{
+    const room = await jbRead(Online.roomId);
+    const winnerRole = Online.role==='host' ? 'p2' : 'p1';
+    room.status='finished'; room.winner=winnerRole; room.updatedAt=Date.now();
+    await jbUpdate(Online.roomId, room);
+  }catch(e){ /* si la connexion échoue, la mise reste simplement perdue localement */ }
+}
+document.getElementById('result-home').onclick = showHub;
+
+/* Mode toggle */
+document.getElementById('mode-local-btn').onclick = ()=> setMode('local');
+document.getElementById('mode-online-btn').onclick = ()=> setMode('online');
+document.getElementById('mode-ai-btn').onclick = ()=> setMode('ai');
+function setMode(m){
+  state.mode = m;
+  document.getElementById('mode-local-btn').classList.toggle('active', m==='local');
+  document.getElementById('mode-online-btn').classList.toggle('active', m==='online');
+  document.getElementById('mode-ai-btn').classList.toggle('active', m==='ai');
+  document.getElementById('local-panel').classList.toggle('hidden', m!=='local');
+  document.getElementById('online-panel').classList.toggle('hidden', m==='local');
+  refreshHeader();
+}
+
+/* =================== PROFILES / WALLETS =================== */
+const profilesModal=document.getElementById('profiles-modal');
+document.getElementById('edit-profiles').onclick=async ()=>{
+  if(await isMatchLocked()){ alert("Impossible de modifier les jetons pendant qu'une partie est en cours (ici ou dans un autre onglet). Termine ou quitte la partie d'abord."); return; }
+  document.getElementById('input-p1-name').value=state.p1.name;
+  document.getElementById('input-p1-bal').value=state.p1.bal;
+  document.getElementById('input-p2-name').value=state.p2.name;
+  document.getElementById('input-p2-bal').value=state.p2.bal;
+  profilesModal.classList.remove('hidden');
+};
+document.getElementById('profiles-cancel').onclick=()=>profilesModal.classList.add('hidden');
+document.getElementById('profiles-save').onclick=()=>{
+  state.p1.name=document.getElementById('input-p1-name').value||"Joueur 1";
+  state.p1.bal=parseInt(document.getElementById('input-p1-bal').value)||0;
+  state.p2.name=document.getElementById('input-p2-name').value||"Joueur 2";
+  state.p2.bal=parseInt(document.getElementById('input-p2-bal').value)||0;
+  saveState(); refreshHeader(); profilesModal.classList.add('hidden');
+};
+const onlineWalletModal=document.getElementById('online-wallet-modal');
+const REFILL_CAP = 500;
+document.getElementById('edit-online-wallet').onclick=async ()=>{
+  if(await isMatchLocked()){ alert("Impossible de modifier tes jetons pendant qu'une partie est en cours (ici ou dans un autre onglet). Termine ou quitte la partie d'abord."); return; }
+  document.getElementById('online-wallet-current').textContent = state.online.bal;
+  document.getElementById('online-wallet-cap-txt').textContent = REFILL_CAP;
+  const refillBtn = document.getElementById('online-wallet-refill');
+  refillBtn.disabled = state.online.bal >= REFILL_CAP;
+  refillBtn.textContent = state.online.bal >= REFILL_CAP ? "Ton solde dépasse déjà "+REFILL_CAP : "Renflouer jusqu'à "+REFILL_CAP+" jetons";
+  onlineWalletModal.classList.remove('hidden');
+};
+document.getElementById('online-wallet-cancel').onclick=()=>onlineWalletModal.classList.add('hidden');
+document.getElementById('online-wallet-refill').onclick=()=>{
+  if(state.online.bal < REFILL_CAP){ state.online.bal = REFILL_CAP; saveState(); refreshHeader(); }
+  onlineWalletModal.classList.add('hidden');
+};
+
+/* =================== SETTINGS =================== */
+const settingsModal=document.getElementById('settings-modal');
+document.getElementById('settings-btn').onclick=()=>settingsModal.classList.remove('hidden');
+document.getElementById('settings-cancel').onclick=()=>settingsModal.classList.add('hidden');
+document.getElementById('settings-save').onclick=()=>{
+  state.houseRate=parseInt(document.getElementById('rate-select').value);
+  saveState(); refreshHeader(); settingsModal.classList.add('hidden');
+};
+
+/* =================== SÉLECTION DE JEU =================== */
+let pendingGame = null;
+const gameNames = {morpion:"Morpion", puissance4:"Puissance 4", dames:"Les Dames", echecs:"Échecs", ludo:"Ludo", bataille:"Bataille", hockey:"Air Hockey", awale:"Awalé", othello:"Othello", nim:"Nim"};
+document.querySelectorAll('.game-card').forEach(card=>{
+  card.onclick = ()=>{
+    pendingGame = card.dataset.game;
+    if(pendingGame==='hockey'){
+      if(state.mode!=='local'){ alert("L'Air Hockey se joue en temps réel : il n'est disponible que sur ce téléphone (mode local)."); return; }
+      openStakeModal(); return;
+    }
+    if(pendingGame==='bataille' && state.mode==='ai'){ alert("La Bataille n'a pas besoin d'adversaire à choix : joue en mode local ou en ligne."); return; }
+    if(state.mode==='local') openStakeModal();
+    else if(state.mode==='online'){
+      if(pendingGame==='ludo'){ document.getElementById('ludo-choice-modal').classList.remove('hidden'); return; }
+      openOnlineModal();
+    }
+    else if(state.mode==='ai') openAiModal();
+  };
+});
+
+/* ---- LOCAL STAKE MODAL ---- */
+const stakeModal=document.getElementById('stake-modal'), stakeInput=document.getElementById('stake-input'), potPreview=document.getElementById('pot-preview');
+function openStakeModal(){
+  document.getElementById('stake-title').textContent="Mise — "+gameNames[pendingGame];
+  stakeInput.value=""; updatePotPreview(); stakeModal.classList.remove('hidden');
+}
+document.querySelectorAll('.stake-chip').forEach(chip=>{ chip.onclick=()=>{ stakeInput.value=chip.dataset.v; updatePotPreview(); }; });
+stakeInput.oninput=updatePotPreview;
+function updatePotPreview(){
+  const v=parseInt(stakeInput.value)||0, pot=v*2, cut=Math.round(pot*state.houseRate/100), net=pot-cut;
+  potPreview.innerHTML=`Chaque joueur mise <b>${v}</b>.<br>Pot total : <b>${pot}</b><br>Commission (${state.houseRate}%) : <span class="cut">${cut}</span><br>Le gagnant repart avec : <b>${net}</b>.`;
+}
+document.getElementById('stake-cancel').onclick=()=>stakeModal.classList.add('hidden');
+document.getElementById('stake-confirm').onclick=()=>{
+  const v=parseInt(stakeInput.value)||0;
+  if(v<=0){ alert("Entre un montant valide."); return; }
+  if(v>state.p1.bal || v>state.p2.bal){ alert("Solde insuffisant."); return; }
+  state.p1.bal-=v; state.p2.bal-=v; currentStake=v; state.matchLock=true;
+  saveState(); refreshHeader(); stakeModal.classList.add('hidden');
+  Online.active=false; AI.active=false;
+  launchGame(pendingGame);
+};
+let currentStake=0;
+
+/* ---- MODE IA ---- */
+const AI = { active:false, difficulty:'medium' };
+const aiModal=document.getElementById('ai-modal');
+let aiSelectedLevel='medium';
+function openAiModal(){
+  document.getElementById('ai-title').textContent="Contre l'IA — "+gameNames[pendingGame];
+  document.getElementById('ai-stake-input').value="";
+  aiSelectedLevel='medium';
+  aiModal.querySelectorAll('.stake-chip[data-lvl]').forEach(c=>c.classList.toggle('active', c.dataset.lvl==='medium'));
+  updateAiPotPreview();
+  aiModal.classList.remove('hidden');
+}
+aiModal.querySelectorAll('.stake-chip[data-lvl]').forEach(chip=>{
+  chip.onclick=()=>{
+    aiSelectedLevel=chip.dataset.lvl;
+    aiModal.querySelectorAll('.stake-chip[data-lvl]').forEach(c=>c.classList.toggle('active', c===chip));
+  };
+});
+document.getElementById('ai-stake-input').oninput = updateAiPotPreview;
+function updateAiPotPreview(){
+  const v=parseInt(document.getElementById('ai-stake-input').value)||0, pot=v*2, cut=Math.round(pot*state.houseRate/100), net=pot-cut;
+  document.getElementById('ai-pot-preview').innerHTML = `Si tu gagnes : <b>${net}</b> jetons (commission ${state.houseRate}% incluse).<br>Si tu perds : tu perds ta mise de <b>${v}</b> jetons.`;
+}
+document.getElementById('ai-cancel').onclick=()=>aiModal.classList.add('hidden');
+document.getElementById('ai-confirm').onclick=()=>{
+  const v=parseInt(document.getElementById('ai-stake-input').value)||0;
+  if(v<=0){ alert("Entre un montant valide."); return; }
+  if(v>state.online.bal){ alert("Solde insuffisant."); return; }
+  state.online.bal-=v; state.matchLock=true; saveState(); refreshHeader();
+  currentStake=v; Online.active=false; AI.active=true; AI.difficulty=aiSelectedLevel;
+  aiModal.classList.add('hidden');
+  launchGame(pendingGame);
+};
+function endGameAI(winnerKey){ // 'p1' (toi) | 'p2' (IA) | null
+  AI.active=false; state.matchLock=false;
+  if(winnerKey===null){
+    state.online.bal+=currentStake; saveState(); refreshHeader();
+    document.getElementById('result-title').textContent="🤝 Match nul";
+    document.getElementById('result-winner-name').textContent="Ta mise t'est remboursée.";
+    document.getElementById('result-amount').textContent=""; document.getElementById('result-breakdown').innerHTML="";
+    showResult(); return;
+  }
+  if(winnerKey==='p1'){
+    const pot=currentStake*2, cut=Math.round(pot*state.houseRate/100), net=pot-cut;
+    state.online.bal+=net; state.houseBal+=cut; saveState(); refreshHeader();
+    document.getElementById('result-title').textContent="🏆 Tu as gagné !";
+    document.getElementById('result-winner-name').textContent="Tu as battu l'IA.";
+    document.getElementById('result-amount').textContent="+"+net+" jetons";
+    document.getElementById('result-breakdown').innerHTML=`Ta mise <span>${currentStake}</span><br>Pot total <span>${pot}</span><br>Commission (${state.houseRate}%) <span>-${cut}</span><br>Ton gain <span>${net}</span>`;
+  } else {
+    state.houseBal+=currentStake; saveState(); refreshHeader();
+    document.getElementById('result-title').textContent="🤖 L'IA a gagné";
+    document.getElementById('result-winner-name').textContent="Pas de chance, réessaie !";
+    document.getElementById('result-amount').textContent="-"+currentStake+" jetons";
+    document.getElementById('result-breakdown').innerHTML=`Mise perdue <span>${currentStake}</span>`;
+  }
+  showResult();
+}
+function finishSolo(winnerKey){ if(AI.active) setTimeout(()=>endGameAI(winnerKey),400); else setTimeout(()=>endGame(winnerKey),400); }
+
+/* ---- ONLINE MODAL ---- */
+const onlineModal=document.getElementById('online-modal');
+const Online = {
+  active:false, role:null, roomId:null, stake:0, pollHandle:null, lastSeen:0, payoutApplied:false, meta:null, checkNow:null,
+  stopPolling(){ if(this.pollHandle){ clearInterval(this.pollHandle); this.pollHandle=null; } this.checkNow=null; }
+};
+function openOnlineModal(){
+  document.getElementById('online-title').textContent="Jouer en ligne — "+gameNames[pendingGame];
+  document.getElementById('online-choice').classList.remove('hidden');
+  document.getElementById('online-create-form').classList.add('hidden');
+  document.getElementById('online-join-form').classList.add('hidden');
+  document.getElementById('online-waiting').classList.add('hidden');
+  onlineModal.classList.remove('hidden');
+}
+document.getElementById('online-cancel').onclick=()=>{
+  Online.stopPolling();
+  if(Online.active && Online.role==='host'){
+    state.online.bal += Online.stake; state.matchLock=false; saveState(); refreshHeader();
+    Online.active=false; Online.meta=null;
+  }
+  onlineModal.classList.add('hidden');
+};
+
+/* ---- LUDO : choix 2 / 4 joueurs ---- */
+document.getElementById('ludo-choice-cancel').onclick=()=> document.getElementById('ludo-choice-modal').classList.add('hidden');
+document.getElementById('ludo-choice-2p').onclick=()=>{ document.getElementById('ludo-choice-modal').classList.add('hidden'); openOnlineModal(); };
+document.getElementById('ludo-choice-4p').onclick=()=>{ document.getElementById('ludo-choice-modal').classList.add('hidden'); openLudoLobbyModal(); };
+
+/* ---- LUDO LOBBY (jusqu'à 4 joueurs) ---- */
+const LudoLobby = { active:false, roomId:null, myRole:null, pollHandle:null, payoutApplied:false };
+const ludoLobbyModal = document.getElementById('ludo-lobby-modal');
+function openLudoLobbyModal(){
+  document.getElementById('ludo-lobby-choice').classList.remove('hidden');
+  document.getElementById('ludo-lobby-create-form').classList.add('hidden');
+  document.getElementById('ludo-lobby-join-form').classList.add('hidden');
+  document.getElementById('ludo-lobby-waiting').classList.add('hidden');
+  ludoLobbyModal.classList.remove('hidden');
+}
+document.getElementById('ludo-lobby-cancel').onclick=async ()=>{
+  stopLudoLobbyPolling();
+  if(LudoLobby.active && LudoLobby.myRole==='p1'){
+    try{
+      const room = await jbRead(LudoLobby.roomId);
+      if(room.status==='waiting'){
+        state.online.bal += room.stake; state.matchLock=false; saveState(); refreshHeader();
+      }
+    }catch(e){}
+  }
+  LudoLobby.active=false;
+  ludoLobbyModal.classList.add('hidden');
+};
+function stopLudoLobbyPolling(){ if(LudoLobby.pollHandle){ clearInterval(LudoLobby.pollHandle); LudoLobby.pollHandle=null; } }
+
+document.getElementById('ludo-lobby-create-btn').onclick=()=>{
+  document.getElementById('ludo-lobby-choice').classList.add('hidden');
+  document.getElementById('ludo-lobby-create-form').classList.remove('hidden');
+};
+document.getElementById('ludo-lobby-join-btn').onclick=()=>{
+  document.getElementById('ludo-lobby-choice').classList.add('hidden');
+  document.getElementById('ludo-lobby-join-form').classList.remove('hidden');
+};
+function renderLudoLobbyPlayers(players, maxPlayers){
+  const colorEmoji={p1:'🔴',p2:'🟢',p3:'🟡',p4:'🔵'};
+  const lines = players.map(p=> colorEmoji[p.role]+' '+(p.role===LudoLobby.myRole?'Toi':p.name));
+  for(let i=players.length;i<maxPlayers;i++) lines.push('⬜ En attente...');
+  document.getElementById('ludo-lobby-players').innerHTML = lines.join('<br>');
+}
+document.getElementById('ludo-lobby-create-confirm').onclick=async ()=>{
+  const v=parseInt(document.getElementById('ludo-lobby-stake-input').value)||0;
+  const maxPlayers=parseInt(document.getElementById('ludo-lobby-max-select').value)||4;
+  if(v<=0){ alert("Entre un montant valide."); return; }
+  if(v>state.online.bal){ alert("Solde insuffisant."); return; }
+  state.online.bal-=v; state.matchLock=true; saveState(); refreshHeader();
+  const room = {game:'ludoLobby', stake:v, maxPlayers, status:'waiting', players:[{role:'p1',name:'Toi'}], turn:null, winner:null, state:null, updatedAt:Date.now()};
+  const id = await jbCreate(room);
+  LudoLobby.active=true; LudoLobby.myRole='p1'; LudoLobby.roomId=id; LudoLobby.payoutApplied=false;
+  document.getElementById('ludo-lobby-create-form').classList.add('hidden');
+  document.getElementById('ludo-lobby-code-display').textContent=id;
+  document.getElementById('ludo-lobby-waiting').classList.remove('hidden');
+  renderLudoLobbyPlayers(room.players, maxPlayers);
+  const startBtn=document.getElementById('ludo-lobby-start-btn');
+  startBtn.classList.remove('hidden');
+  startBtn.onclick=async ()=>{
+    const r = await jbRead(id);
+    if(r.players.length<2){ alert("Il faut au moins 2 joueurs pour lancer la partie."); return; }
+    r.state = buildLudoLobbyInitialState(r.players.map(p=>p.role));
+    r.turn='p1'; r.status='playing'; r.updatedAt=Date.now();
+    await jbUpdate(id, r);
+  };
+  LudoLobby.pollHandle=setInterval(async ()=>{
+    try{
+      const r = await jbRead(id);
+      renderLudoLobbyPlayers(r.players, r.maxPlayers);
+      startBtn.classList.toggle('hidden', r.players.length<2);
+      if(r.players.length>=r.maxPlayers) document.getElementById('ludo-lobby-wait-msg').textContent="Salle complète — tu peux lancer la partie.";
+      if(r.status==='playing'){
+        stopLudoLobbyPolling(); ludoLobbyModal.classList.add('hidden');
+        currentStake=v*r.players.length; LudoLobby.stakeEach=v; LudoLobby.totalPlayers=r.players.length;
+        launchLudoLobbyGame(r);
+      }
+    }catch(e){}
+  }, 1500);
+};
+document.getElementById('ludo-lobby-join-confirm').onclick=async ()=>{
+  const code=document.getElementById('ludo-lobby-code-input').value.trim();
+  if(!code){ alert("Colle le code reçu."); return; }
+  try{
+    const room = await jbRead(code);
+    if(!room || room.game!=='ludoLobby'){ alert("Ce code ne correspond pas à une salle Ludo."); return; }
+    if(room.status!=='waiting'){ alert("Cette salle n'est plus disponible."); return; }
+    if(room.players.length>=room.maxPlayers){ alert("Cette salle est déjà complète."); return; }
+    if(room.stake>state.online.bal){ alert("Solde insuffisant pour cette mise ("+room.stake+" jetons)."); return; }
+    const nextRole = ['p1','p2','p3','p4'][room.players.length];
+    state.online.bal-=room.stake; state.matchLock=true; saveState(); refreshHeader();
+    room.players.push({role:nextRole, name:'Toi'}); room.updatedAt=Date.now();
+    await jbUpdate(code, room);
+    LudoLobby.active=true; LudoLobby.myRole=nextRole; LudoLobby.roomId=code; LudoLobby.payoutApplied=false; LudoLobby.stakeEach=room.stake;
+    document.getElementById('ludo-lobby-join-form').classList.add('hidden');
+    document.getElementById('ludo-lobby-code-display').textContent=code;
+    document.getElementById('ludo-lobby-waiting').classList.remove('hidden');
+    document.getElementById('ludo-lobby-start-btn').classList.add('hidden');
+    document.getElementById('ludo-lobby-wait-msg').textContent="En attente que l'hôte lance la partie...";
+    renderLudoLobbyPlayers(room.players, room.maxPlayers);
+    LudoLobby.pollHandle=setInterval(async ()=>{
+      try{
+        const r = await jbRead(code);
+        renderLudoLobbyPlayers(r.players, r.maxPlayers);
+        if(r.status==='playing'){
+          stopLudoLobbyPolling(); ludoLobbyModal.classList.add('hidden');
+          currentStake=LudoLobby.stakeEach*r.players.length; LudoLobby.totalPlayers=r.players.length;
+          launchLudoLobbyGame(r);
+        }
+      }catch(e){}
+    }, 1500);
+  }catch(e){ alert("Code introuvable. Vérifie qu'il est complet."); }
+};
+document.getElementById('online-create-btn').onclick=()=>{
+  document.getElementById('online-choice').classList.add('hidden');
+  document.getElementById('online-create-form').classList.remove('hidden');
+};
+document.getElementById('online-join-btn').onclick=()=>{
+  document.getElementById('online-choice').classList.add('hidden');
+  document.getElementById('online-join-form').classList.remove('hidden');
+};
+document.getElementById('online-create-confirm').onclick=async ()=>{
+  const v=parseInt(document.getElementById('online-stake-input').value)||0;
+  if(v<=0){ alert("Entre un montant valide."); return; }
+  if(v>state.online.bal){ alert("Solde insuffisant."); return; }
+  state.online.bal-=v; state.matchLock=true; saveState(); refreshHeader();
+  const initial = GAME_ENGINES[pendingGame].initialState();
+  const room = {game:pendingGame, stake:v, status:'waiting', hostName:'Toi', guestName:null, turn:'p1', winner:null, state:initial, updatedAt:Date.now()};
+  const id = await jbCreate(room);
+  Online.active=true; Online.role='host'; Online.roomId=id; Online.stake=v; Online.payoutApplied=false;
+  document.getElementById('online-create-form').classList.add('hidden');
+  document.getElementById('online-code-display').textContent=id;
+  document.getElementById('online-waiting').classList.remove('hidden');
+  Online.pollHandle=setInterval(async ()=>{
+    try{
+      const r = await jbRead(id);
+      if(r.status==='playing'){
+        Online.stopPolling(); onlineModal.classList.add('hidden');
+        Online.meta = {game:pendingGame, stake:v, hostName:'Toi', guestName:r.guestName};
+        currentStake=v; launchGame(pendingGame, r);
+      }
+    }catch(e){}
+  }, 1500);
+};
+document.getElementById('online-copy-code').onclick=()=>{
+  const code=document.getElementById('online-code-display').textContent;
+  navigator.clipboard && navigator.clipboard.writeText(code);
+  alert("Code copié !");
+};
+document.getElementById('online-join-confirm').onclick=async ()=>{
+  const code=document.getElementById('online-code-input').value.trim();
+  if(!code){ alert("Colle le code reçu."); return; }
+  try{
+    const room = await jbRead(code);
+    if(!room || room.game!==pendingGame){ alert("Ce code ne correspond pas à ce jeu."); return; }
+    if(room.status!=='waiting'){ alert("Cette partie n'est plus disponible."); return; }
+    if(room.stake>state.online.bal){ alert("Solde insuffisant pour cette mise ("+room.stake+" jetons)."); return; }
+    state.online.bal-=room.stake; state.matchLock=true; saveState(); refreshHeader();
+    room.guestName='Toi'; room.status='playing'; room.updatedAt=Date.now();
+    await jbUpdate(code, room);
+    Online.active=true; Online.role='guest'; Online.roomId=code; Online.stake=room.stake; Online.payoutApplied=false;
+    Online.meta = {game:pendingGame, stake:room.stake, hostName:room.hostName, guestName:'Toi'};
+    onlineModal.classList.add('hidden');
+    currentStake=room.stake; launchGame(pendingGame, room);
+  }catch(e){ alert("Code introuvable. Vérifie qu'il est complet."); }
+};
+
+/* ---- fin de partie (paiement) ---- */
+function endGame(winnerKey){ // mode local : 'p1' | 'p2' | null
+  state.matchLock=false;
+  if(winnerKey===null){
+    state.p1.bal+=currentStake; state.p2.bal+=currentStake;
+    saveState(); refreshHeader();
+    document.getElementById('result-title').textContent="🤝 Match nul";
+    document.getElementById('result-winner-name').textContent="Les mises ont été remboursées.";
+    document.getElementById('result-amount').textContent=""; document.getElementById('result-breakdown').innerHTML="";
+    showResult(); return;
+  }
+  const winner=state[winnerKey]; const pot=currentStake*2; const cut=Math.round(pot*state.houseRate/100); const net=pot-cut;
+  winner.bal+=net; state.houseBal+=cut; saveState(); refreshHeader();
+  document.getElementById('result-title').textContent="🏆 Victoire !";
+  document.getElementById('result-winner-name').textContent=winner.name+" remporte la partie";
+  document.getElementById('result-amount').textContent="+"+net+" jetons";
+  document.getElementById('result-breakdown').innerHTML=`Mise <span>${currentStake}</span><br>Pot total <span>${pot}</span><br>Commission (${state.houseRate}%) <span>-${cut}</span><br>Gain net <span>${net}</span>`;
+  showResult();
+}
+function endGameOnline(winnerRole){ // 'p1'(host) | 'p2'(guest) | null
+  Online.stopPolling();
+  state.matchLock=false;
+  const iAmWinner = (winnerRole==='p1' && Online.role==='host') || (winnerRole==='p2' && Online.role==='guest');
+  if(winnerRole===null){
+    state.online.bal+=Online.stake; saveState(); refreshHeader();
+    document.getElementById('result-title').textContent="🤝 Match nul";
+    document.getElementById('result-winner-name').textContent="Ta mise t'est remboursée.";
+    document.getElementById('result-amount').textContent=""; document.getElementById('result-breakdown').innerHTML="";
+    showResult(); return;
+  }
+  const pot=Online.stake*2, cut=Math.round(pot*state.houseRate/100), net=pot-cut;
+  if(iAmWinner){ state.online.bal+=net; state.houseBal+=cut; saveState(); refreshHeader();
+    document.getElementById('result-title').textContent="🏆 Tu as gagné !";
+    document.getElementById('result-winner-name').textContent="Bien joué !";
+    document.getElementById('result-amount').textContent="+"+net+" jetons";
+    document.getElementById('result-breakdown').innerHTML=`Ta mise <span>${Online.stake}</span><br>Pot total <span>${pot}</span><br>Commission (${state.houseRate}%) <span>-${cut}</span><br>Ton gain <span>${net}</span>`;
+  } else {
+    saveState(); refreshHeader();
+    document.getElementById('result-title').textContent="😔 Tu as perdu";
+    document.getElementById('result-winner-name').textContent="L'adversaire remporte la mise.";
+    document.getElementById('result-amount').textContent="-"+Online.stake+" jetons";
+    document.getElementById('result-breakdown').innerHTML=`Ta mise perdue <span>${Online.stake}</span>`;
+  }
+  showResult();
+}
+function setTurnBanner(text){ document.getElementById('turn-banner').innerHTML=text; }
+
+/* =================== DISPATCH =================== */
+const GAME_ENGINES = {}; // chaque jeu s'enregistre ici (voir plus bas)
+function launchGame(key, remoteRoom){
+  document.getElementById('game-title').textContent = gameNames[key];
+  document.getElementById('board-area').innerHTML=""; document.getElementById('extra-area').innerHTML="";
+  showGame();
+  GAME_ENGINES[key].start(remoteRoom);
+  if(Online.active){
+    const refreshBtn=document.createElement('button');
+    refreshBtn.className='btn-ghost'; refreshBtn.textContent='🔄 Actualiser maintenant';
+    refreshBtn.onclick=()=>{ Online.checkNow && Online.checkNow(); };
+    document.getElementById('extra-area').appendChild(refreshBtn);
+  }
+}
+
+/* Aide générique pour synchroniser un coup en ligne (jeux "board+turn") */
+async function onlineCommit(newState, newTurn, winnerRole){
+  if(!Online.active || !Online.meta) return;
+  const room = {
+    game: Online.meta.game, stake: Online.meta.stake,
+    status: winnerRole!==undefined ? 'finished' : 'playing',
+    hostName: Online.meta.hostName, guestName: Online.meta.guestName,
+    turn: newTurn, winner: winnerRole!==undefined ? winnerRole : null,
+    state: newState, updatedAt: Date.now()
+  };
+  try{ await jbUpdate(Online.roomId, room); }
+  catch(e){ alert("Ton coup n'a pas pu être envoyé (problème de connexion). Vérifie ta connexion internet et réessaie."); }
+}
+function onlineStartPolling(applyFn){
+  Online.lastSeen=0;
+  async function check(){
+    try{
+      const room=await jbRead(Online.roomId);
+      if(room.updatedAt!==Online.lastSeen){
+        Online.lastSeen=room.updatedAt;
+        applyFn(room);
+        if(room.status==='finished' && !Online.payoutApplied){
+          Online.payoutApplied=true;
+          setTimeout(()=>endGameOnline(room.winner), 350);
+        }
+      }
+    }catch(e){ /* on réessaiera au prochain passage */ }
+  }
+  Online.checkNow = check;
+  check();
+  Online.pollHandle=setInterval(check, 1500);
+}
+
+/* ================= MORPION ================= */
+GAME_ENGINES.morpion = {
+  initialState(){ return {board:Array(9).fill(null), turn:'p1', round:1, starter:'p1'}; },
+  start(remoteRoom){ startMorpion(remoteRoom); }
+};
+function startMorpion(remoteRoom){
+  const MAX_ROUNDS = 20;
+  const initState = remoteRoom ? remoteRoom.state : GAME_ENGINES.morpion.initialState();
+  let board = initState.board.slice();
+  let turn = remoteRoom ? remoteRoom.turn : initState.turn;
+  let round = initState.round || 1;
+  let starter = initState.starter || 'p1';
+  const myRole = Online.active ? (Online.role==='host'?'p1':'p2') : null;
+  const area=document.getElementById('board-area');
+  const grid=document.createElement('div'); grid.className='ttt-board';
+  for(let i=0;i<9;i++){
+    const cell=document.createElement('button'); cell.className='ttt-cell';
+    cell.onclick=()=>{
+      if(Online.active && turn!==myRole) return;
+      if(AI.active && turn==='p2') return;
+      playMove(i);
+    };
+    grid.appendChild(cell);
+  }
+  area.appendChild(grid);
+  function render(){ [...grid.children].forEach((c,i)=>{ c.textContent=board[i]||""; c.className='ttt-cell'+(board[i]==='X'?' x':board[i]==='O'?' o':''); }); }
+  function checkWin(){
+    const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    for(const [a,b,c] of lines) if(board[a] && board[a]===board[b] && board[b]===board[c]) return board[a]==='X'?'p1':'p2';
+    return null;
+  }
+  function playMove(i){
+    if(board[i] || checkWin()) return;
+    board[i]=turn==='p1'?'X':'O'; render();
+    const w=checkWin();
+    if(w){
+      if(Online.active) onlineCommit({board,turn,round,starter}, turn, w); else finishSolo(w);
+      return;
+    }
+    if(board.every(c=>c)){
+      if(round>=MAX_ROUNDS){
+        if(Online.active) onlineCommit({board,turn,round,starter}, turn, null); else finishSolo(null);
+        return;
+      }
+      round++; starter = starter==='p1'?'p2':'p1'; turn=starter; board=Array(9).fill(null);
+      render();
+      if(Online.active) onlineCommit({board,turn,round,starter}, turn);
+      setTimeout(updateBanner, 300);
+      maybeAiTurn();
+      return;
+    }
+    turn = turn==='p1'?'p2':'p1';
+    if(Online.active) onlineCommit({board,turn,round,starter}, turn);
+    updateBanner();
+    maybeAiTurn();
+  }
+  function maybeAiTurn(){
+    if(!AI.active || turn!=='p2' || checkWin() || board.every(c=>c)) return;
+    setTimeout(()=>{ const i=aiPickMorpionMove(board,'O','X',AI.difficulty); if(i!=null) playMove(i); }, 550);
+  }
+  function updateBanner(){
+    const roundTxt = `Manche ${round}/${MAX_ROUNDS} — `;
+    if(Online.active){
+      setTurnBanner(roundTxt + (turn===myRole ? "🟢 À toi de jouer" : "⏳ En attente de l'adversaire..."));
+    } else if(AI.active){
+      setTurnBanner(roundTxt + (turn==='p1' ? "🟢 À toi de jouer" : "🤖 L'IA réfléchit..."));
+    } else {
+      setTurnBanner(roundTxt + (turn==='p1' ? `<span class="p1">${state.p1.name} (✕)</span> à toi de jouer` : `<span class="p2">${state.p2.name} (⭕)</span> à toi de jouer`));
+    }
+  }
+  render(); updateBanner();
+  maybeAiTurn();
+  if(Online.active) onlineStartPolling((room)=>{ board=room.state.board.slice(); turn=room.turn; round=room.state.round; starter=room.state.starter; render(); updateBanner(); });
+}
+function aiPickMorpionMove(board, aiSym, huSym, difficulty){
+  const empties = board.map((v,i)=>v?null:i).filter(v=>v!==null);
+  if(empties.length===0) return null;
+  function winnerOf(b){
+    const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    for(const [a,b1,c] of lines) if(b[a] && b[a]===b[b1] && b[b1]===b[c]) return b[a];
+    return null;
+  }
+  if(difficulty==='easy') return empties[Math.floor(Math.random()*empties.length)];
+  if(difficulty==='medium'){
+    for(const i of empties){ const b=board.slice(); b[i]=aiSym; if(winnerOf(b)===aiSym) return i; }
+    for(const i of empties){ const b=board.slice(); b[i]=huSym; if(winnerOf(b)===huSym) return i; }
+    if(!board[4]) return 4;
+    const corners=[0,2,6,8].filter(i=>!board[i]);
+    if(corners.length) return corners[Math.floor(Math.random()*corners.length)];
+    return empties[Math.floor(Math.random()*empties.length)];
+  }
+  function minimax(b, sym){
+    const w=winnerOf(b);
+    if(w===aiSym) return {score:10};
+    if(w===huSym) return {score:-10};
+    if(b.every(c=>c)) return {score:0};
+    const moves=[];
+    for(let i=0;i<9;i++){ if(!b[i]){ const nb=b.slice(); nb[i]=sym; moves.push({index:i, score:minimax(nb, sym===aiSym?huSym:aiSym).score}); } }
+    if(sym===aiSym){ let best=moves[0]; for(const m of moves) if(m.score>best.score) best=m; return best; }
+    let best=moves[0]; for(const m of moves) if(m.score<best.score) best=m; return best;
+  }
+  return minimax(board, aiSym).index;
+}
+
+/* ================= PUISSANCE 4 ================= */
+GAME_ENGINES.puissance4 = {
+  initialState(){ return {board:Array.from({length:6},()=>Array(7).fill(null)), turn:'p1'}; },
+  start(remoteRoom){ startPuissance4(remoteRoom); }
+};
+function startPuissance4(remoteRoom){
+  const ROWS=6, COLS=7;
+  let board = remoteRoom ? remoteRoom.state.board.map(r=>r.slice()) : Array.from({length:ROWS},()=>Array(COLS).fill(null));
+  let turn = remoteRoom ? remoteRoom.turn : 'p1';
+  const myRole = Online.active ? (Online.role==='host'?'p1':'p2') : null;
+  const area=document.getElementById('board-area');
+  const wrap=document.createElement('div');
+  const cols=document.createElement('div'); cols.className='p4-cols';
+  const grid=document.createElement('div'); grid.className='p4-board';
+  for(let c=0;c<COLS;c++){
+    const btn=document.createElement('button'); btn.className='p4-col-btn'; btn.textContent='▼';
+    btn.onclick=()=>{ if(Online.active && turn!==myRole) return; if(AI.active && turn==='p2') return; drop(c); };
+    cols.appendChild(btn);
+  }
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){ const cell=document.createElement('div'); cell.className='p4-cell'; cell.dataset.r=r; cell.dataset.c=c; grid.appendChild(cell); }
+  wrap.appendChild(cols); wrap.appendChild(grid); area.appendChild(wrap);
+  function drop(c){
+    for(let r=ROWS-1;r>=0;r--){
+      if(!board[r][c]){
+        board[r][c]=turn; render();
+        const w=checkWin(r,c);
+        if(w){ if(Online.active) onlineCommit({board}, turn, w); else finishSolo(w); return; }
+        if(board.every(row=>row.every(cell=>cell))){ if(Online.active) onlineCommit({board}, turn, null); else finishSolo(null); return; }
+        turn=turn==='p1'?'p2':'p1';
+        if(Online.active) onlineCommit({board}, turn);
+        updateBanner();
+        maybeAiTurn();
+        return;
+      }
+    }
+  }
+  function maybeAiTurn(){
+    if(!AI.active || turn!=='p2') return;
+    setTimeout(()=>{ const c=aiPickP4Move(board,'p2','p1',AI.difficulty); if(c!=null) drop(c); }, 550);
+  }
+  function render(){ grid.querySelectorAll('.p4-cell').forEach(cell=>{ const r=cell.dataset.r,c=cell.dataset.c,v=board[r][c]; cell.className='p4-cell'+(v==='p1'?' r':v==='p2'?' j':''); }); }
+  function checkWin(r,c){
+    const val=board[r][c]; const dirs=[[0,1],[1,0],[1,1],[1,-1]];
+    for(const [dr,dc] of dirs){
+      let count=1;
+      for(const s of [1,-1]){ let rr=r+dr*s, cc=c+dc*s; while(rr>=0&&rr<ROWS&&cc>=0&&cc<COLS&&board[rr][cc]===val){ count++; rr+=dr*s; cc+=dc*s; } }
+      if(count>=4) return val;
+    }
+    return null;
+  }
+  function updateBanner(){
+    if(Online.active) setTurnBanner(turn===myRole ? "🟢 À toi de jouer" : "⏳ En attente de l'adversaire...");
+    else if(AI.active) setTurnBanner(turn==='p1' ? "🟢 À toi de jouer" : "🤖 L'IA réfléchit...");
+    else setTurnBanner(turn==='p1' ? `<span class="p1">${state.p1.name} (rouge)</span> à toi de jouer` : `<span class="p2">${state.p2.name} (jaune)</span> à toi de jouer`);
+  }
+  render(); updateBanner();
+  maybeAiTurn();
+  if(Online.active) onlineStartPolling((room)=>{ board=room.state.board.map(r=>r.slice()); turn=room.turn; render(); updateBanner(); });
+}
+function aiPickP4Move(board, aiRole, huRole, difficulty){
+  const ROWS=board.length, COLS=board[0].length;
+  function dropRow(b,c){ for(let r=ROWS-1;r>=0;r--) if(!b[r][c]) return r; return -1; }
+  const validCols=[]; for(let c=0;c<COLS;c++) if(dropRow(board,c)>=0) validCols.push(c);
+  if(validCols.length===0) return null;
+  function checkWinAt(b,r,c,val){
+    const dirs=[[0,1],[1,0],[1,1],[1,-1]];
+    for(const [dr,dc] of dirs){
+      let count=1;
+      for(const s of [1,-1]){ let rr=r+dr*s, cc=c+dc*s; while(rr>=0&&rr<ROWS&&cc>=0&&cc<COLS&&b[rr][cc]===val){ count++; rr+=dr*s; cc+=dc*s; } }
+      if(count>=4) return true;
+    }
+    return false;
+  }
+  if(difficulty==='easy') return validCols[Math.floor(Math.random()*validCols.length)];
+  for(const c of validCols){ const r=dropRow(board,c); if(checkWinAt(board,r,c,aiRole)) return c; }
+  for(const c of validCols){ const r=dropRow(board,c); if(checkWinAt(board,r,c,huRole)) return c; }
+  const center=Math.floor(COLS/2);
+  if(difficulty==='medium'){
+    const sorted=validCols.slice().sort((a,b)=>Math.abs(a-center)-Math.abs(b-center));
+    return sorted[0];
+  }
+  const safe=validCols.filter(c=>{
+    const r=dropRow(board,c);
+    const b2=board.map(row=>row.slice()); b2[r][c]=aiRole;
+    for(let c2=0;c2<COLS;c2++){ const r2=dropRow(b2,c2); if(r2>=0 && checkWinAt(b2,r2,c2,huRole)) return false; }
+    return true;
+  });
+  const pool=(safe.length?safe:validCols).slice().sort((a,b)=>Math.abs(a-center)-Math.abs(b-center));
+  return pool[0];
+}
+
+/* ================= DAMES ================= */
+GAME_ENGINES.dames = {
+  initialState(){
+    let board=Array.from({length:8},()=>Array(8).fill(null));
+    for(let r=0;r<3;r++) for(let c=0;c<8;c++) if((r+c)%2===1) board[r][c]={owner:'p2',king:false};
+    for(let r=5;r<8;r++) for(let c=0;c<8;c++) if((r+c)%2===1) board[r][c]={owner:'p1',king:false};
+    return {board, turn:'p1'};
+  },
+  start(remoteRoom){ startDames(remoteRoom); }
+};
+function startDames(remoteRoom){
+  let board = remoteRoom ? remoteRoom.state.board : GAME_ENGINES.dames.initialState().board;
+  let turn = remoteRoom ? remoteRoom.turn : 'p1', selected=null;
+  const myRole = Online.active ? (Online.role==='host'?'p1':'p2') : null;
+  const area=document.getElementById('board-area');
+  const grid=document.createElement('div'); grid.className='dames-board';
+  const cells=[];
+  for(let r=0;r<8;r++){ cells.push([]); for(let c=0;c<8;c++){ const cell=document.createElement('div'); cell.className='dames-cell '+((r+c)%2===0?'light':'dark'); cell.onclick=()=>onCellClick(r,c); grid.appendChild(cell); cells[r].push(cell); } }
+  area.appendChild(grid);
+  function render(){
+    const legal = selected ? movesFor(selected[0],selected[1]) : [];
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+      const cell=cells[r][c]; cell.innerHTML='';
+      cell.classList.toggle('selected', !!selected && selected[0]===r && selected[1]===c);
+      cell.classList.toggle('legal', legal.some(m=>m.r===r && m.c===c));
+      const p=board[r][c];
+      if(p){ const pawn=document.createElement('div'); pawn.className='pawn '+p.owner+(p.king?' king':''); cell.appendChild(pawn); }
+    }
+  }
+  function dir(owner){ return owner==='p1'?-1:1; }
+  function movesFor(r,c){
+    const p=board[r][c]; if(!p) return [];
+    const dirs=p.king?[-1,1]:[dir(p.owner)]; const moves=[];
+    for(const dr of dirs) for(const dc of [-1,1]){
+      const nr=r+dr, nc=c+dc;
+      if(nr>=0&&nr<8&&nc>=0&&nc<8&&!board[nr][nc]) moves.push({r:nr,c:nc,capture:null});
+      const jr=r+dr*2, jc=c+dc*2;
+      if(jr>=0&&jr<8&&jc>=0&&jc<8&&board[nr]&&board[nr][nc]&&board[nr][nc].owner!==p.owner&&!board[jr][jc]) moves.push({r:jr,c:jc,capture:[nr,nc]});
+    }
+    return moves;
+  }
+  function applyMoveAndContinue(fr,fc,m){
+    board[m.r][m.c]=board[fr][fc]; board[fr][fc]=null;
+    if(m.capture) board[m.capture[0]][m.capture[1]]=null;
+    if(m.r===0||m.r===7) board[m.r][m.c].king=true;
+    selected=null; render();
+    const w=checkWin();
+    if(w){ if(Online.active) onlineCommit({board}, turn, w); else finishSolo(w); return; }
+    turn=turn==='p1'?'p2':'p1';
+    if(Online.active) onlineCommit({board}, turn);
+    updateBanner();
+    maybeAiTurn();
+  }
+  function onCellClick(r,c){
+    if(Online.active && turn!==myRole) return;
+    if(AI.active && turn==='p2') return;
+    if(selected && selected[0]===r && selected[1]===c){ selected=null; render(); return; }
+    const p=board[r][c];
+    if(selected){
+      const moves=movesFor(selected[0],selected[1]); const m=moves.find(m=>m.r===r&&m.c===c);
+      if(m){ applyMoveAndContinue(selected[0],selected[1],m); return; }
+    }
+    if(p && p.owner===turn){ selected=[r,c]; render(); } else { selected=null; render(); }
+  }
+  function maybeAiTurn(){
+    if(!AI.active || turn!=='p2') return;
+    setTimeout(()=>{
+      const mv=aiPickDamesMove(board,'p2','p1',AI.difficulty);
+      if(mv) applyMoveAndContinue(mv.from[0], mv.from[1], mv.to);
+    }, 600);
+  }
+  function checkWin(){
+    let p1c=0,p2c=0; for(const row of board) for(const cell of row){ if(cell){ if(cell.owner==='p1')p1c++; else p2c++; } }
+    if(p1c===0) return 'p2'; if(p2c===0) return 'p1'; return null;
+  }
+  function updateBanner(){
+    if(Online.active) setTurnBanner(turn===myRole ? "🟢 À toi de jouer" : "⏳ En attente de l'adversaire...");
+    else if(AI.active) setTurnBanner(turn==='p1' ? "🟢 À toi de jouer" : "🤖 L'IA réfléchit...");
+    else setTurnBanner(turn==='p1' ? `<span class="p1">${state.p1.name} (rouge)</span> à toi de jouer` : `<span class="p2">${state.p2.name} (bleu)</span> à toi de jouer`);
+  }
+  render(); updateBanner();
+  maybeAiTurn();
+  if(Online.active) onlineStartPolling((room)=>{ board=room.state.board; turn=room.turn; selected=null; render(); updateBanner(); });
+}
+function damesMovesForPiece(board,r,c){
+  const p=board[r][c]; if(!p) return [];
+  const dir = p.owner==='p1' ? -1 : 1;
+  const dirs = p.king ? [-1,1] : [dir];
+  const moves=[];
+  for(const dr of dirs) for(const dc of [-1,1]){
+    const nr=r+dr, nc=c+dc;
+    if(nr>=0&&nr<8&&nc>=0&&nc<8&&!board[nr][nc]) moves.push({r:nr,c:nc,capture:null});
+    const jr=r+dr*2, jc=c+dc*2;
+    if(jr>=0&&jr<8&&jc>=0&&jc<8&&board[nr]&&board[nr][nc]&&board[nr][nc].owner!==p.owner&&!board[jr][jc]) moves.push({r:jr,c:jc,capture:[nr,nc]});
+  }
+  return moves;
+}
+function damesAllMoves(board, owner){
+  const all=[];
+  for(let r=0;r<8;r++) for(let c=0;c<8;c++){ if(board[r][c] && board[r][c].owner===owner){ damesMovesForPiece(board,r,c).forEach(m=>all.push({from:[r,c], to:m})); } }
+  return all;
+}
+function aiPickDamesMove(board, aiOwner, huOwner, difficulty){
+  const all=damesAllMoves(board, aiOwner);
+  if(all.length===0) return null;
+  const captures=all.filter(m=>m.to.capture);
+  if(difficulty==='easy') return all[Math.floor(Math.random()*all.length)];
+  const pool = captures.length ? captures : all;
+  if(difficulty==='medium') return pool[Math.floor(Math.random()*pool.length)];
+  function applyMoveCopy(b, mv){
+    const nb=b.map(row=>row.map(cell=>cell?{owner:cell.owner,king:cell.king}:null));
+    nb[mv.to.r][mv.to.c]=nb[mv.from[0]][mv.from[1]]; nb[mv.from[0]][mv.from[1]]=null;
+    if(mv.to.capture) nb[mv.to.capture[0]][mv.to.capture[1]]=null;
+    if(mv.to.r===0||mv.to.r===7) nb[mv.to.r][mv.to.c].king=true;
+    return nb;
+  }
+  function isCapturable(b,r,c,owner){
+    return damesAllMoves(b, owner==='p1'?'p2':'p1').some(m=>m.to.capture && m.to.capture[0]===r && m.to.capture[1]===c);
+  }
+  let best=null, bestScore=-Infinity;
+  for(const mv of pool){
+    const nb=applyMoveCopy(board, mv);
+    let score = mv.to.capture ? 5 : 0;
+    score += isCapturable(nb, mv.to.r, mv.to.c, aiOwner) ? -3 : 2;
+    if(score>bestScore || (score===bestScore && Math.random()<0.5)){ bestScore=score; best=mv; }
+  }
+  return best;
+}
+
+/* ================= ÉCHECS ================= */
+GAME_ENGINES.echecs = {
+  initialState(){
+    const back=['r','n','b','q','k','b','n','r'];
+    let board=Array.from({length:8},()=>Array(8).fill(null));
+    for(let c=0;c<8;c++){ board[0][c]={type:back[c],owner:'p2'}; board[1][c]={type:'p',owner:'p2'}; board[6][c]={type:'p',owner:'p1'}; board[7][c]={type:back[c],owner:'p1'}; }
+    return {board, turn:'p1'};
+  },
+  start(remoteRoom){ startEchecs(remoteRoom); }
+};
+const CHESS_SYMS = { p1:{p:'♙',r:'♖',n:'♘',b:'♗',q:'♕',k:'♔'}, p2:{p:'♟',r:'♜',n:'♞',b:'♝',q:'♛',k:'♚'} };
+function startEchecs(remoteRoom){
+  let board = remoteRoom ? remoteRoom.state.board : GAME_ENGINES.echecs.initialState().board;
+  let turn = remoteRoom ? remoteRoom.turn : 'p1', selected=null;
+  const myRole = Online.active ? (Online.role==='host'?'p1':'p2') : null;
+  const area=document.getElementById('board-area');
+  const grid=document.createElement('div'); grid.className='chess-board';
+  const cells=[];
+  for(let r=0;r<8;r++){ cells.push([]); for(let c=0;c<8;c++){ const cell=document.createElement('div'); cell.className='chess-cell '+((r+c)%2===0?'light':'dark'); cell.onclick=()=>onCellClick(r,c); grid.appendChild(cell); cells[r].push(cell); } }
+  area.appendChild(grid);
+
+  function cloneBoard(b){ return b.map(row=>row.map(cell=>cell?{type:cell.type,owner:cell.owner}:null)); }
+  function findKing(b, owner){ for(let r=0;r<8;r++)for(let c=0;c<8;c++) if(b[r][c] && b[r][c].type==='k' && b[r][c].owner===owner) return [r,c]; return null; }
+  function pseudoMoves(b, r, c){
+    const p=b[r][c]; if(!p) return [];
+    const moves=[]; const enemy=p.owner==='p1'?'p2':'p1';
+    const slide=(dirs)=>{ for(const [dr,dc] of dirs){ let rr=r+dr, cc=c+dc; while(rr>=0&&rr<8&&cc>=0&&cc<8){ if(!b[rr][cc]){ moves.push([rr,cc]); } else { if(b[rr][cc].owner===enemy) moves.push([rr,cc]); break; } rr+=dr; cc+=dc; } } };
+    if(p.type==='p'){
+      const dir=p.owner==='p1'?-1:1, startRow=p.owner==='p1'?6:1;
+      if(r+dir>=0&&r+dir<8&&!b[r+dir][c]){ moves.push([r+dir,c]); if(r===startRow && !b[r+2*dir][c]) moves.push([r+2*dir,c]); }
+      for(const dc of [-1,1]){ const rr=r+dir, cc=c+dc; if(rr>=0&&rr<8&&cc>=0&&cc<8&&b[rr][cc]&&b[rr][cc].owner===enemy) moves.push([rr,cc]); }
+    } else if(p.type==='n'){
+      const offs=[[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]];
+      for(const [dr,dc] of offs){ const rr=r+dr, cc=c+dc; if(rr>=0&&rr<8&&cc>=0&&cc<8 && (!b[rr][cc]||b[rr][cc].owner===enemy)) moves.push([rr,cc]); }
+    } else if(p.type==='b'){ slide([[1,1],[1,-1],[-1,1],[-1,-1]]); }
+    else if(p.type==='r'){ slide([[1,0],[-1,0],[0,1],[0,-1]]); }
+    else if(p.type==='q'){ slide([[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]); }
+    else if(p.type==='k'){ for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){ if(dr||dc){ const rr=r+dr, cc=c+dc; if(rr>=0&&rr<8&&cc>=0&&cc<8 && (!b[rr][cc]||b[rr][cc].owner===enemy)) moves.push([rr,cc]); } } }
+    return moves;
+  }
+  function isAttacked(b, r, c, byOwner){
+    for(let rr=0;rr<8;rr++)for(let cc=0;cc<8;cc++){ const p=b[rr][cc]; if(p && p.owner===byOwner){ const ms=pseudoMoves(b,rr,cc); if(ms.some(m=>m[0]===r&&m[1]===c)) return true; } }
+    return false;
+  }
+  function legalMoves(r,c){
+    const p=board[r][c]; if(!p) return [];
+    const raw=pseudoMoves(board,r,c); const out=[];
+    for(const [rr,cc] of raw){
+      const cb=cloneBoard(board); cb[rr][cc]=cb[r][c]; cb[r][c]=null;
+      const kp=findKing(cb, p.owner);
+      if(!kp || !isAttacked(cb, kp[0], kp[1], p.owner==='p1'?'p2':'p1')) out.push({r:rr,c:cc});
+    }
+    return out;
+  }
+  function anyLegalMove(owner){
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){ if(board[r][c] && board[r][c].owner===owner){ if(legalMoves(r,c).length>0) return true; } }
+    return false;
+  }
+  function render(){
+    const legal = selected ? legalMoves(selected[0],selected[1]) : [];
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+      const cell=cells[r][c]; cell.innerHTML='';
+      cell.classList.toggle('selected', !!selected && selected[0]===r && selected[1]===c);
+      cell.classList.toggle('legal', legal.some(m=>m.r===r && m.c===c));
+      const p=board[r][c];
+      if(p){ const sp=document.createElement('div'); sp.className='chess-piece '+p.owner; sp.textContent=CHESS_SYMS[p.owner][p.type]; cell.appendChild(sp); }
+    }
+  }
+  function applyMoveAndContinue(fr,fc,r,c){
+    board[r][c]=board[fr][fc]; board[fr][fc]=null;
+    if(board[r][c].type==='p' && (r===0||r===7)) board[r][c].type='q';
+    selected=null; render();
+    const nextTurn = turn==='p1'?'p2':'p1';
+    const opponentHasMoves = anyLegalMove(nextTurn);
+    const opponentInCheck = (()=>{ const kp=findKing(board,nextTurn); return kp && isAttacked(board, kp[0], kp[1], turn); })();
+    if(!opponentHasMoves){
+      const w = opponentInCheck ? turn : null;
+      if(Online.active) onlineCommit({board}, turn, w); else finishSolo(w);
+      return;
+    }
+    turn=nextTurn;
+    if(Online.active) onlineCommit({board}, turn);
+    updateBanner();
+    maybeAiTurn();
+  }
+  function onCellClick(r,c){
+    if(Online.active && turn!==myRole) return;
+    if(AI.active && turn==='p2') return;
+    if(selected && selected[0]===r && selected[1]===c){ selected=null; render(); return; }
+    const p=board[r][c];
+    if(selected){
+      const moves=legalMoves(selected[0],selected[1]); const m=moves.find(m=>m.r===r&&m.c===c);
+      if(m){ applyMoveAndContinue(selected[0],selected[1],r,c); return; }
+    }
+    if(p && p.owner===turn){ selected=[r,c]; render(); } else { selected=null; render(); }
+  }
+  function maybeAiTurn(){
+    if(!AI.active || turn!=='p2') return;
+    setTimeout(()=>{
+      const mv=aiPickChessMove(board,'p2','p1',AI.difficulty);
+      if(mv) applyMoveAndContinue(mv.from[0], mv.from[1], mv.to[0], mv.to[1]);
+    }, 600);
+  }
+  function updateBanner(){
+    if(Online.active) setTurnBanner(turn===myRole ? "🟢 À toi de jouer" : "⏳ En attente de l'adversaire...");
+    else if(AI.active) setTurnBanner(turn==='p1' ? "🟢 À toi de jouer" : "🤖 L'IA réfléchit...");
+    else setTurnBanner(turn==='p1' ? `<span class="p1">${state.p1.name} (blancs)</span> à toi de jouer` : `<span class="p2">${state.p2.name} (noirs)</span> à toi de jouer`);
+  }
+  render(); updateBanner();
+  maybeAiTurn();
+  if(Online.active) onlineStartPolling((room)=>{ board=room.state.board; turn=room.turn; selected=null; render(); updateBanner(); });
+}
+function chessCloneBoard(b){ return b.map(row=>row.map(cell=>cell?{type:cell.type,owner:cell.owner}:null)); }
+function chessFindKing(b, owner){ for(let r=0;r<8;r++)for(let c=0;c<8;c++) if(b[r][c] && b[r][c].type==='k' && b[r][c].owner===owner) return [r,c]; return null; }
+function chessPseudoMoves(b, r, c){
+  const p=b[r][c]; if(!p) return [];
+  const moves=[]; const enemy=p.owner==='p1'?'p2':'p1';
+  const slide=(dirs)=>{ for(const [dr,dc] of dirs){ let rr=r+dr, cc=c+dc; while(rr>=0&&rr<8&&cc>=0&&cc<8){ if(!b[rr][cc]){ moves.push([rr,cc]); } else { if(b[rr][cc].owner===enemy) moves.push([rr,cc]); break; } rr+=dr; cc+=dc; } } };
+  if(p.type==='p'){
+    const dir=p.owner==='p1'?-1:1, startRow=p.owner==='p1'?6:1;
+    if(r+dir>=0&&r+dir<8&&!b[r+dir][c]){ moves.push([r+dir,c]); if(r===startRow && !b[r+2*dir][c]) moves.push([r+2*dir,c]); }
+    for(const dc of [-1,1]){ const rr=r+dir, cc=c+dc; if(rr>=0&&rr<8&&cc>=0&&cc<8&&b[rr][cc]&&b[rr][cc].owner===enemy) moves.push([rr,cc]); }
+  } else if(p.type==='n'){
+    const offs=[[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]];
+    for(const [dr,dc] of offs){ const rr=r+dr, cc=c+dc; if(rr>=0&&rr<8&&cc>=0&&cc<8 && (!b[rr][cc]||b[rr][cc].owner===enemy)) moves.push([rr,cc]); }
+  } else if(p.type==='b'){ slide([[1,1],[1,-1],[-1,1],[-1,-1]]); }
+  else if(p.type==='r'){ slide([[1,0],[-1,0],[0,1],[0,-1]]); }
+  else if(p.type==='q'){ slide([[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]); }
+  else if(p.type==='k'){ for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){ if(dr||dc){ const rr=r+dr, cc=c+dc; if(rr>=0&&rr<8&&cc>=0&&cc<8 && (!b[rr][cc]||b[rr][cc].owner===enemy)) moves.push([rr,cc]); } } }
+  return moves;
+}
+function chessIsAttacked(b, r, c, byOwner){
+  for(let rr=0;rr<8;rr++)for(let cc=0;cc<8;cc++){ const p=b[rr][cc]; if(p && p.owner===byOwner){ if(chessPseudoMoves(b,rr,cc).some(m=>m[0]===r&&m[1]===c)) return true; } }
+  return false;
+}
+function chessLegalMoves(b,r,c){
+  const p=b[r][c]; if(!p) return [];
+  const raw=chessPseudoMoves(b,r,c); const out=[];
+  for(const [rr,cc] of raw){
+    const cb=chessCloneBoard(b); cb[rr][cc]=cb[r][c]; cb[r][c]=null;
+    const kp=chessFindKing(cb,p.owner);
+    if(!kp || !chessIsAttacked(cb,kp[0],kp[1], p.owner==='p1'?'p2':'p1')) out.push([rr,cc]);
+  }
+  return out;
+}
+function chessAllLegalMoves(b, owner){
+  const all=[];
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){ if(b[r][c] && b[r][c].owner===owner){ chessLegalMoves(b,r,c).forEach(m=>all.push({from:[r,c], to:m})); } }
+  return all;
+}
+const CHESS_VALUES = {p:1,n:3,b:3,r:5,q:9,k:1000};
+function chessMaterial(b, owner){
+  let s=0; for(const row of b) for(const cell of row){ if(cell) s += (cell.owner===owner?1:-1)*CHESS_VALUES[cell.type]; }
+  return s;
+}
+function aiPickChessMove(board, aiOwner, huOwner, difficulty){
+  const all = chessAllLegalMoves(board, aiOwner);
+  if(all.length===0) return null;
+  if(difficulty==='easy') return all[Math.floor(Math.random()*all.length)];
+  function applyMove(b, mv){
+    const nb=chessCloneBoard(b);
+    nb[mv.to[0]][mv.to[1]] = nb[mv.from[0]][mv.from[1]];
+    nb[mv.from[0]][mv.from[1]] = null;
+    if(nb[mv.to[0]][mv.to[1]].type==='p' && (mv.to[0]===0||mv.to[0]===7)) nb[mv.to[0]][mv.to[1]].type='q';
+    return nb;
+  }
+  if(difficulty==='medium'){
+    let bestCapture=null, bestVal=-1;
+    for(const mv of all){
+      const target=board[mv.to[0]][mv.to[1]];
+      if(target && CHESS_VALUES[target.type]>bestVal){ bestVal=CHESS_VALUES[target.type]; bestCapture=mv; }
+    }
+    return bestCapture || all[Math.floor(Math.random()*all.length)];
+  }
+  let best=null, bestScore=-Infinity;
+  for(const mv of all){
+    const nb=applyMove(board, mv);
+    let score = chessMaterial(nb, aiOwner);
+    const kp = chessFindKing(nb, huOwner);
+    const oppInCheck = kp && chessIsAttacked(nb, kp[0], kp[1], aiOwner);
+    const oppHasMoves = chessAllLegalMoves(nb, huOwner).length>0;
+    if(!oppHasMoves) score += oppInCheck ? 1000 : -20;
+    else if(oppInCheck) score += 0.5;
+    if(score>bestScore){ bestScore=score; best=mv; }
+  }
+  return best;
+}
+
+/* ================= BATAILLE ================= */
+GAME_ENGINES.bataille = {
+  initialState(){
+    const suits=['♠','♥','♦','♣'], ranks=[2,3,4,5,6,7,8,9,10,11,12,13,14];
+    let deck=[]; for(const s of suits) for(const r of ranks) deck.push({r,s});
+    for(let i=deck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]]; }
+    return {p1deck:deck.slice(0,26), p2deck:deck.slice(26)};
+  },
+  start(remoteRoom){ startBataille(remoteRoom); }
+};
+function startBataille(remoteRoom){
+  const labels={11:'J',12:'Q',13:'K',14:'A'};
+  const initial = remoteRoom ? remoteRoom.state : GAME_ENGINES.bataille.initialState();
+  let p1deck = initial.p1deck.slice(), p2deck = initial.p2deck.slice(), pot=[], log=[];
+  const myRole = Online.active ? (Online.role==='host'?'p1':'p2') : null;
+  const area=document.getElementById('board-area');
+  const zone=document.createElement('div'); zone.className='bataille-zone';
+  const slot1=document.createElement('div'); slot1.className='card-slot';
+  const vs=document.createElement('div'); vs.style.fontSize='13px'; vs.style.color='var(--text-dim)'; vs.textContent='VS';
+  const slot2=document.createElement('div'); slot2.className='card-slot';
+  zone.appendChild(slot1); zone.appendChild(vs); zone.appendChild(slot2); area.appendChild(zone);
+  const extra=document.getElementById('extra-area');
+  const counts=document.createElement('div'); counts.style.display='flex'; counts.style.justifyContent='space-around';
+  counts.innerHTML=`<div class="pile-count" id="p1-pile"></div><div class="pile-count" id="p2-pile"></div>`;
+  const p1Label = Online.active ? "Toi (bas)" : state.p1.name;
+  const p2Label = Online.active ? "Adversaire (haut)" : state.p2.name;
+  const infoLine=document.createElement('div'); infoLine.className='controls-hint'; infoLine.style.marginBottom='6px';
+  infoLine.textContent = `${p1Label} 🆚 ${p2Label} — même paquet mélangé des deux côtés, chaque manche révèle une carte automatiquement.`;
+  const playBtn=document.createElement('button'); playBtn.className='btn btn-primary'; playBtn.style.marginTop='10px'; playBtn.textContent='Jouer une manche';
+  const autoBtn=document.createElement('button'); autoBtn.className='btn btn-secondary'; autoBtn.style.marginTop='10px'; autoBtn.textContent="Jouer automatiquement jusqu'à la fin";
+  const logBox=document.createElement('div'); logBox.className='battle-log';
+  extra.appendChild(infoLine); extra.appendChild(counts); extra.appendChild(playBtn); extra.appendChild(autoBtn); extra.appendChild(logBox);
+
+  function cardLabel(card){ return (labels[card.r]||card.r)+card.s; }
+  function isRed(card){ return card.s==='♥'||card.s==='♦'; }
+  function updateCounts(){ document.getElementById('p1-pile').textContent=p1Label+" : "+p1deck.length+" cartes"; document.getElementById('p2-pile').textContent=p2Label+" : "+p2deck.length+" cartes"; }
+  function pushLog(t){ log.unshift(t); if(log.length>6) log.pop(); logBox.innerHTML=log.join('<br>'); }
+  function finish(winner){ playBtn.disabled=true; autoBtn.disabled=true; if(Online.active){ if(myRole==='p1') onlineCommit({p1deck,p2deck}, null, winner); } else { setTimeout(()=>endGame(winner),300); } }
+  function playRound(){
+    if(p1deck.length===0){ finish('p2'); return true; }
+    if(p2deck.length===0){ finish('p1'); return true; }
+    const c1=p1deck.shift(), c2=p2deck.shift();
+    slot1.textContent=cardLabel(c1); slot1.className='card-slot '+(isRed(c1)?'red':'black');
+    slot2.textContent=cardLabel(c2); slot2.className='card-slot '+(isRed(c2)?'red':'black');
+    pot.push(c1,c2);
+    if(c1.r>c2.r){ p1deck.push(...pot); pot=[]; pushLog(`${cardLabel(c1)} bat ${cardLabel(c2)} → ${p1Label} remporte ${pot.length||2} carte(s).`); }
+    else if(c2.r>c1.r){ p2deck.push(...pot); pot=[]; pushLog(`${cardLabel(c2)} bat ${cardLabel(c1)} → ${p2Label} remporte la manche.`); }
+    else { pushLog(`Égalité (${cardLabel(c1)}) → bataille, les cartes restent en jeu.`); }
+    updateCounts();
+    if(p1deck.length===0){ finish('p2'); return true; }
+    if(p2deck.length===0){ finish('p1'); return true; }
+    return false;
+  }
+  playBtn.onclick=()=>{ playRound(); };
+  autoBtn.onclick=()=>{ let n=0; const iv=setInterval(()=>{ const done=playRound(); n++; if(done||n>400) clearInterval(iv); }, 220); };
+  updateCounts();
+  if(Online.active){
+    setTurnBanner("Les deux téléphones jouent la même partie en parallèle — appuie sur les boutons pour avancer.");
+    onlineStartPolling((room)=>{ if(room.status==='finished'){ /* déjà géré par payoutApplied */ } });
+  } else {
+    setTurnBanner(`${state.p1.name} 🆚 ${state.p2.name}`);
+  }
+}
+
+/* ================= AIR HOCKEY (local uniquement, temps réel) ================= */
+GAME_ENGINES.hockey = {
+  initialState(){ return {}; },
+  start(){ startHockey(); }
+};
+function startHockey(){
+  const W=300, H=440, GOAL_WIDTH=110, paddleR=22, ballR=10, MAX_SCORE=5;
+  const area=document.getElementById('board-area');
+  const canvas=document.createElement('canvas'); canvas.width=W; canvas.height=H;
+  canvas.style.borderRadius='14px'; canvas.style.background='#04101F'; canvas.style.touchAction='none';
+  area.appendChild(canvas);
+  const ctx=canvas.getContext('2d');
+  let score={p1:0,p2:0}, running=true;
+  let paddle1={x:W/2,y:H-40}, paddle2={x:W/2,y:40};
+  let ball={x:W/2,y:H/2,vx:0,vy:0};
+  function resetBall(dir){ ball.x=W/2; ball.y=H/2; ball.vx=(Math.random()<0.5?-1:1)*4.5; ball.vy=4.5*dir; }
+  resetBall(Math.random()<0.5?1:-1);
+
+  function handleTouch(e){
+    e.preventDefault();
+    const rect=canvas.getBoundingClientRect();
+    for(const t of e.touches){
+      const x=(t.clientX-rect.left)*(W/rect.width);
+      const y=(t.clientY-rect.top)*(H/rect.height);
+      if(y > H/2){ paddle1.x=Math.min(Math.max(x,paddleR),W-paddleR); paddle1.y=Math.min(Math.max(y,H/2+paddleR),H-paddleR); }
+      else { paddle2.x=Math.min(Math.max(x,paddleR),W-paddleR); paddle2.y=Math.min(Math.max(y,paddleR),H/2-paddleR); }
+    }
+  }
+  canvas.addEventListener('touchstart', handleTouch, {passive:false});
+  canvas.addEventListener('touchmove', handleTouch, {passive:false});
+
+  const scoreEl=document.createElement('div'); scoreEl.className='controls-hint'; scoreEl.style.fontSize='16px'; scoreEl.style.fontWeight='700'; scoreEl.style.margin='4px 0 8px';
+  const extra=document.getElementById('extra-area'); extra.appendChild(scoreEl);
+  const hint=document.createElement('div'); hint.className='controls-hint';
+  hint.textContent="Glisse ton doigt dans ta moitié d'écran pour déplacer ta raquette. Premier à "+MAX_SCORE+" buts gagne.";
+  extra.appendChild(hint);
+  function updateScoreLabel(){ scoreEl.textContent = `${state.p2.name} : ${score.p2}   —   ${score.p1} : ${state.p1.name}`; }
+  setTurnBanner(`<span class="p2">${state.p2.name}</span> en haut · <span class="p1">${state.p1.name}</span> en bas`);
+  updateScoreLabel();
+
+  function loop(){
+    if(!running) return;
+    ball.x+=ball.vx; ball.y+=ball.vy;
+    if(ball.x<ballR){ ball.x=ballR; ball.vx*=-1; }
+    if(ball.x>W-ballR){ ball.x=W-ballR; ball.vx*=-1; }
+    if(ball.y<ballR){
+      if(ball.x>W/2-GOAL_WIDTH/2 && ball.x<W/2+GOAL_WIDTH/2){
+        score.p1++; updateScoreLabel();
+        if(score.p1>=MAX_SCORE){ running=false; setTimeout(()=>endGame('p1'),300); return; }
+        resetBall(1);
+      } else { ball.y=ballR; ball.vy*=-1; }
+    }
+    if(ball.y>H-ballR){
+      if(ball.x>W/2-GOAL_WIDTH/2 && ball.x<W/2+GOAL_WIDTH/2){
+        score.p2++; updateScoreLabel();
+        if(score.p2>=MAX_SCORE){ running=false; setTimeout(()=>endGame('p2'),300); return; }
+        resetBall(-1);
+      } else { ball.y=H-ballR; ball.vy*=-1; }
+    }
+    [paddle1,paddle2].forEach(p=>{
+      const dx=ball.x-p.x, dy=ball.y-p.y, dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist < paddleR+ballR && dist>0){
+        const angle=Math.atan2(dy,dx);
+        const speed=Math.min(14, Math.max(6, Math.sqrt(ball.vx*ball.vx+ball.vy*ball.vy)*1.12));
+        ball.vx=Math.cos(angle)*speed; ball.vy=Math.sin(angle)*speed;
+        const overlap=paddleR+ballR-dist;
+        ball.x+=Math.cos(angle)*overlap; ball.y+=Math.sin(angle)*overlap;
+      }
+    });
+    draw();
+    if(running) requestAnimationFrame(loop);
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(255,255,255,0.25)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(0,H/2); ctx.lineTo(W,H/2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(W/2,H/2,40,0,Math.PI*2); ctx.stroke();
+    ctx.strokeStyle='#4FAE6B'; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(W/2-GOAL_WIDTH/2,2); ctx.lineTo(W/2+GOAL_WIDTH/2,2); ctx.stroke();
+    ctx.strokeStyle='#E15A5A'; ctx.beginPath(); ctx.moveTo(W/2-GOAL_WIDTH/2,H-2); ctx.lineTo(W/2+GOAL_WIDTH/2,H-2); ctx.stroke();
+    ctx.fillStyle='#4C8DFF'; ctx.beginPath(); ctx.arc(paddle2.x,paddle2.y,paddleR,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#E15A5A'; ctx.beginPath(); ctx.arc(paddle1.x,paddle1.y,paddleR,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#F2A93B'; ctx.beginPath(); ctx.arc(ball.x,ball.y,ballR,0,Math.PI*2); ctx.fill();
+  }
+  draw();
+  requestAnimationFrame(loop);
+}
+
+/* ================= AWALÉ ================= */
+function awaleLegalPits(board, owner){
+  const range = owner==='p1' ? [0,1,2,3,4,5] : [6,7,8,9,10,11];
+  return range.filter(i=>board[i]>0);
+}
+function awaleSow(board, pit, owner){
+  const nb = board.slice();
+  let seeds = nb[pit]; nb[pit]=0;
+  let i=pit;
+  while(seeds>0){
+    i=(i+1)%12;
+    if(i===pit) continue; // on ne resème jamais dans la case de départ
+    nb[i]++; seeds--;
+  }
+  const lastPit=i;
+  const opponentRange = owner==='p1' ? [6,7,8,9,10,11] : [0,1,2,3,4,5];
+  let captured=0;
+  let p=lastPit;
+  while(opponentRange.includes(p) && (nb[p]===2 || nb[p]===3)){
+    captured += nb[p]; nb[p]=0;
+    p = (p-1+12)%12;
+    if(!opponentRange.includes(p)) break;
+  }
+  return {board:nb, captured};
+}
+function awaleAIChoice(board, aiOwner, huOwner, difficulty){
+  const pits = awaleLegalPits(board, aiOwner);
+  if(pits.length===0) return null;
+  if(difficulty==='easy') return pits[Math.floor(Math.random()*pits.length)];
+  const scored = pits.map(p=>({p, res:awaleSow(board,p,aiOwner)}));
+  scored.sort((a,b)=> b.res.captured - a.res.captured);
+  if(difficulty==='medium') return scored[0].p;
+  // hard: capture value moins la meilleure réponse capturable de l'adversaire ensuite
+  let best=null, bestScore=-Infinity;
+  for(const s of scored){
+    const huPits = awaleLegalPits(s.res.board, huOwner);
+    let worstReply=0;
+    for(const hp of huPits){ const r=awaleSow(s.res.board, hp, huOwner); if(r.captured>worstReply) worstReply=r.captured; }
+    const score = s.res.captured - worstReply;
+    if(score>bestScore){ bestScore=score; best=s.p; }
+  }
+  return best;
+}
+GAME_ENGINES.awale = {
+  initialState(){ return {board:Array(12).fill(4), score1:0, score2:0, turn:'p1'}; },
+  start(remoteRoom){ startAwale(remoteRoom); }
+};
+function startAwale(remoteRoom){
+  const initS = remoteRoom ? remoteRoom.state : GAME_ENGINES.awale.initialState();
+  let board = initS.board.slice(), score1=initS.score1, score2=initS.score2;
+  let turn = remoteRoom ? remoteRoom.turn : initS.turn;
+  let moveCount = initS.moveCount || 0;
+  const MAX_MOVES = 300;
+  const myRole = Online.active ? (Online.role==='host'?'p1':'p2') : null;
+  const area=document.getElementById('board-area');
+  const wrap=document.createElement('div'); wrap.style.display='flex'; wrap.style.flexDirection='column'; wrap.style.alignItems='center'; wrap.style.gap='10px';
+  const topRow=document.createElement('div'); topRow.style.display='flex'; topRow.style.gap='8px';
+  const botRow=document.createElement('div'); botRow.style.display='flex'; botRow.style.gap='8px'; botRow.style.flexDirection='row-reverse';
+  const scoreRow=document.createElement('div'); scoreRow.style.display='flex'; scoreRow.style.justifyContent='space-between'; scoreRow.style.width='320px'; scoreRow.style.fontSize='13px'; scoreRow.style.fontWeight='700';
+  const pitEls=[];
+  for(let i=0;i<12;i++){
+    const cell=document.createElement('button');
+    cell.style.width='46px'; cell.style.height='46px'; cell.style.borderRadius='50%';
+    cell.style.background='linear-gradient(160deg,#8a5a2b,#5c3a1a)'; cell.style.color='#fff'; cell.style.fontWeight='800'; cell.style.fontSize='16px';
+    cell.style.border='2px solid #3d2712'; cell.style.boxShadow='inset 0 3px 5px rgba(0,0,0,0.5)';
+    cell.onclick=()=>onPitClick(i);
+    pitEls.push(cell);
+    if(i<6) topRow.insertBefore(cell, topRow.firstChild); else botRow.insertBefore(cell, botRow.firstChild);
+  }
+  wrap.appendChild(scoreRow); wrap.appendChild(topRow); wrap.appendChild(botRow); area.appendChild(wrap);
+  const hint=document.createElement('div'); hint.className='controls-hint';
+  hint.textContent="Tape une de tes cases (en bas = Joueur 1, en haut = Joueur 2). Les graines se sèment dans le sens inverse des aiguilles d'une montre. Si la dernière graine tombe dans une case adverse qui atteint 2 ou 3 graines, tu la captures (et celles d'avant si elles aussi atteignent 2 ou 3).";
+  document.getElementById('extra-area').appendChild(hint);
+
+  function render(){
+    for(let i=0;i<12;i++){ pitEls[i].textContent=board[i]; pitEls[i].style.opacity = board[i]===0?'0.4':'1'; }
+    scoreRow.innerHTML = `<span>${labelFor('p1')} : ${score1}</span><span>${labelFor('p2')} : ${score2}</span>`;
+  }
+  function labelFor(role){
+    if(Online.active) return role===myRole ? 'Toi' : 'Adversaire';
+    if(AI.active) return role==='p1' ? 'Toi' : "L'IA";
+    return role==='p1' ? state.p1.name : state.p2.name;
+  }
+  function updateBanner(){
+    if(Online.active) setTurnBanner(turn===myRole ? "🟢 À toi de jouer" : "⏳ En attente de l'adversaire...");
+    else if(AI.active) setTurnBanner(turn==='p1' ? "🟢 À toi de jouer" : "🤖 L'IA réfléchit...");
+    else setTurnBanner(turn==='p1' ? `<span class="p1">${state.p1.name}</span> à toi de jouer` : `<span class="p2">${state.p2.name}</span> à toi de jouer`);
+  }
+  function sideEmpty(owner){ const r=owner==='p1'?[0,1,2,3,4,5]:[6,7,8,9,10,11]; return r.every(i=>board[i]===0); }
+  function finalize(){
+    let remaining=board.reduce((a,b)=>a+b,0);
+    if(sideEmpty('p1')) score2+=remaining; else score1+=remaining;
+    board=Array(12).fill(0);
+    const w = score1>score2 ? 'p1' : score2>score1 ? 'p2' : null;
+    render();
+    if(Online.active) onlineCommit({board,score1,score2,turn,moveCount}, turn, w);
+    else if(AI.active) setTimeout(()=>endGameAI(w),400);
+    else setTimeout(()=>endGame(w),400);
+  }
+  function onPitClick(i){
+    if(board[i]===0) return;
+    const owner = i<6 ? 'p1' : 'p2';
+    if(owner!==turn) return;
+    if(Online.active && turn!==myRole) return;
+    if(AI.active && turn!=='p1') return;
+    playPit(i);
+  }
+  function playPit(i){
+    const res = awaleSow(board, i, turn);
+    board = res.board;
+    if(turn==='p1') score1+=res.captured; else score2+=res.captured;
+    moveCount++;
+    render();
+    const nextTurn = turn==='p1'?'p2':'p1';
+    if(sideEmpty(nextTurn) || moveCount>=MAX_MOVES){ turn=nextTurn; finalize(); return; }
+    turn=nextTurn;
+    if(Online.active) onlineCommit({board,score1,score2,turn,moveCount}, turn);
+    updateBanner();
+    if(AI.active && turn==='p2'){ setTimeout(()=>{ const p=awaleAIChoice(board,'p2','p1',AI.difficulty); if(p!==null) playPit(p); else finalize(); }, 600); }
+  }
+  render(); updateBanner();
+  if(Online.active) onlineStartPolling((room)=>{ board=room.state.board.slice(); score1=room.state.score1; score2=room.state.score2; turn=room.turn; moveCount=room.state.moveCount; render(); updateBanner(); });
+}
+
+/* ================= OTHELLO ================= */
+const OTH_DIRS=[[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
+function othelloLegalMoves(board, owner){
+  const enemy = owner==='p1'?'p2':'p1'; const moves=[];
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+    if(board[r][c]) continue;
+    let ok=false;
+    for(const [dr,dc] of OTH_DIRS){
+      let rr=r+dr, cc=c+dc, seenEnemy=false;
+      while(rr>=0&&rr<8&&cc>=0&&cc<8&&board[rr][cc]===enemy){ seenEnemy=true; rr+=dr; cc+=dc; }
+      if(seenEnemy && rr>=0&&rr<8&&cc>=0&&cc<8&&board[rr][cc]===owner){ ok=true; break; }
+    }
+    if(ok) moves.push([r,c]);
+  }
+  return moves;
+}
+function othelloApply(board, r, c, owner){
+  const nb = board.map(row=>row.slice()); const enemy=owner==='p1'?'p2':'p1';
+  nb[r][c]=owner;
+  for(const [dr,dc] of OTH_DIRS){
+    let rr=r+dr, cc=c+dc; const line=[];
+    while(rr>=0&&rr<8&&cc>=0&&cc<8&&nb[rr][cc]===enemy){ line.push([rr,cc]); rr+=dr; cc+=dc; }
+    if(line.length && rr>=0&&rr<8&&cc>=0&&cc<8&&nb[rr][cc]===owner){ line.forEach(([lr,lc])=>{ nb[lr][lc]=owner; }); }
+  }
+  return nb;
+}
+function othelloCount(board, owner){ let n=0; for(const row of board) for(const c of row) if(c===owner) n++; return n; }
+function othelloAIChoice(board, aiOwner, huOwner, difficulty){
+  const moves = othelloLegalMoves(board, aiOwner);
+  if(moves.length===0) return null;
+  if(difficulty==='easy') return moves[Math.floor(Math.random()*moves.length)];
+  function flips(m){ return othelloCount(othelloApply(board,m[0],m[1],aiOwner),aiOwner) - othelloCount(board,aiOwner); }
+  const CORNERS=[[0,0],[0,7],[7,0],[7,7]];
+  if(difficulty==='medium'){
+    moves.sort((a,b)=>{
+      const ca=CORNERS.some(cc=>cc[0]===a[0]&&cc[1]===a[1])?100:0;
+      const cb=CORNERS.some(cc=>cc[0]===b[0]&&cc[1]===b[1])?100:0;
+      return (flips(b)+cb) - (flips(a)+ca);
+    });
+    return moves[0];
+  }
+  // hard: minimax profondeur 3 avec évaluation positionnelle simple
+  const WEIGHTS=[[100,-20,10,5,5,10,-20,100],[-20,-50,-2,-2,-2,-2,-50,-20],[10,-2,1,1,1,1,-2,10],[5,-2,1,0,0,1,-2,5],[5,-2,1,0,0,1,-2,5],[10,-2,1,1,1,1,-2,10],[-20,-50,-2,-2,-2,-2,-50,-20],[100,-20,10,5,5,10,-20,100]];
+  function evalBoard(b){ let s=0; for(let r=0;r<8;r++)for(let c=0;c<8;c++){ if(b[r][c]===aiOwner) s+=WEIGHTS[r][c]; else if(b[r][c]===huOwner) s-=WEIGHTS[r][c]; } return s; }
+  function minimax(b, depth, isMax, owner){
+    const mv = othelloLegalMoves(b, owner);
+    if(depth===0 || mv.length===0) return evalBoard(b);
+    let best = isMax ? -Infinity : Infinity;
+    for(const m of mv){
+      const nb = othelloApply(b, m[0], m[1], owner);
+      const score = minimax(nb, depth-1, !isMax, owner===aiOwner?huOwner:aiOwner);
+      best = isMax ? Math.max(best,score) : Math.min(best,score);
+    }
+    return best;
+  }
+  let best=null, bestScore=-Infinity;
+  for(const m of moves){
+    const nb = othelloApply(board, m[0], m[1], aiOwner);
+    const score = minimax(nb, 2, false, huOwner);
+    if(score>bestScore){ bestScore=score; best=m; }
+  }
+  return best;
+}
+GAME_ENGINES.othello = {
+  initialState(){ let b=Array.from({length:8},()=>Array(8).fill(null)); b[3][3]='p2'; b[3][4]='p1'; b[4][3]='p1'; b[4][4]='p2'; return {board:b, turn:'p1'}; },
+  start(remoteRoom){ startOthello(remoteRoom); }
+};
+function startOthello(remoteRoom){
+  let board = remoteRoom ? remoteRoom.state.board : GAME_ENGINES.othello.initialState().board;
+  let turn = remoteRoom ? remoteRoom.turn : 'p1';
+  const myRole = Online.active ? (Online.role==='host'?'p1':'p2') : null;
+  const area=document.getElementById('board-area');
+  const grid=document.createElement('div'); grid.className='dames-board'; grid.style.background='#0F5E33';
+  const cells=[];
+  for(let r=0;r<8;r++){ cells.push([]); for(let c=0;c<8;c++){ const cell=document.createElement('div'); cell.style.aspectRatio='1'; cell.style.background='#12703D'; cell.style.border='1px solid #0B4526'; cell.style.display='flex'; cell.style.alignItems='center'; cell.style.justifyContent='center'; cell.onclick=()=>onCellClick(r,c); grid.appendChild(cell); cells[r].push(cell); } }
+  area.appendChild(grid);
+  function render(){
+    const legal = othelloLegalMoves(board, turn);
+    for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+      const cell=cells[r][c]; cell.innerHTML=''; cell.style.position='relative';
+      const isLegal = ((!Online.active && !AI.active) || (Online.active && turn===myRole) || (AI.active && turn==='p1')) && legal.some(m=>m[0]===r&&m[1]===c);
+      cell.style.boxShadow = isLegal ? 'inset 0 0 0 3px rgba(242,169,59,0.7)' : 'none';
+      if(board[r][c]){ const pawn=document.createElement('div'); pawn.className='pawn '+board[r][c]; cell.appendChild(pawn); }
+    }
+  }
+  function updateBanner(){
+    if(Online.active) setTurnBanner(turn===myRole ? "🟢 À toi de jouer" : "⏳ En attente de l'adversaire...");
+    else if(AI.active) setTurnBanner(turn==='p1' ? "🟢 À toi de jouer" : "🤖 L'IA réfléchit...");
+    else setTurnBanner(turn==='p1' ? `<span class="p1">${state.p1.name} (noir)</span> à toi de jouer` : `<span class="p2">${state.p2.name} (blanc)</span> à toi de jouer`);
+  }
+  function finishIfNeeded(){
+    const c1=othelloCount(board,'p1'), c2=othelloCount(board,'p2');
+    const w = c1>c2?'p1':c2>c1?'p2':null;
+    if(Online.active) onlineCommit({board}, turn, w);
+    else if(AI.active) setTimeout(()=>endGameAI(w),400);
+    else setTimeout(()=>endGame(w),400);
+  }
+  function playAt(r,c){
+    board = othelloApply(board, r, c, turn);
+    let nextTurn = turn==='p1'?'p2':'p1';
+    const nextHasMoves = othelloLegalMoves(board, nextTurn).length>0;
+    const currentHasMoves = othelloLegalMoves(board, turn).length>0;
+    render();
+    if(!nextHasMoves && !currentHasMoves){ turn=nextTurn; finishIfNeeded(); return; }
+    if(!nextHasMoves){ /* l'adversaire passe son tour */ }
+    else { turn=nextTurn; }
+    if(Online.active) onlineCommit({board}, turn);
+    updateBanner();
+    if(AI.active && turn==='p2'){
+      if(othelloLegalMoves(board,'p2').length===0){ turn='p1'; updateBanner(); return; }
+      setTimeout(()=>{ const m=othelloAIChoice(board,'p2','p1',AI.difficulty); if(m) playAt(m[0],m[1]); }, 600);
+    }
+  }
+  function onCellClick(r,c){
+    if(board[r][c]) return;
+    if(Online.active && turn!==myRole) return;
+    if(AI.active && turn!=='p1') return;
+    const legal = othelloLegalMoves(board, turn);
+    if(!legal.some(m=>m[0]===r&&m[1]===c)) return;
+    playAt(r,c);
+  }
+  render(); updateBanner();
+  if(AI.active && turn==='p2') setTimeout(()=>{ const m=othelloAIChoice(board,'p2','p1',AI.difficulty); if(m) playAt(m[0],m[1]); }, 600);
+  if(Online.active) onlineStartPolling((room)=>{ board=room.state.board; turn=room.turn; render(); updateBanner(); });
+}
+
+/* ================= NIM ================= */
+function nimAIChoice(count, difficulty){
+  const maxTake = Math.min(3, count);
+  if(difficulty==='easy') return 1+Math.floor(Math.random()*maxTake);
+  // stratégie optimale (misère, 1-3) : laisser un reste ≡ 1 (mod 4) à l'adversaire
+  const optimal = ((count-1)%4===0) ? null : ((count-1)%4);
+  if(difficulty==='hard'){ if(optimal && optimal>=1 && optimal<=3) return optimal; return 1+Math.floor(Math.random()*maxTake); }
+  // medium : joue optimal une fois sur deux
+  if(Math.random()<0.5 && optimal && optimal>=1 && optimal<=3) return optimal;
+  return 1+Math.floor(Math.random()*maxTake);
+}
+GAME_ENGINES.nim = {
+  initialState(){ return {count:15+Math.floor(Math.random()*7), turn:'p1'}; },
+  start(remoteRoom){ startNim(remoteRoom); }
+};
+function startNim(remoteRoom){
+  const initS = remoteRoom ? remoteRoom.state : GAME_ENGINES.nim.initialState();
+  let count=initS.count, turn = remoteRoom ? remoteRoom.turn : initS.turn;
+  const myRole = Online.active ? (Online.role==='host'?'p1':'p2') : null;
+  const area=document.getElementById('board-area');
+  const wrap=document.createElement('div'); wrap.style.display='flex'; wrap.style.flexWrap='wrap'; wrap.style.gap='6px'; wrap.style.maxWidth='320px'; wrap.style.justifyContent='center';
+  area.appendChild(wrap);
+  const extra=document.getElementById('extra-area');
+  const countLabel=document.createElement('div'); countLabel.style.textAlign='center'; countLabel.style.fontWeight='800'; countLabel.style.fontSize='22px'; countLabel.style.margin='10px 0';
+  const btnRow=document.createElement('div'); btnRow.style.display='flex'; btnRow.style.gap='10px'; btnRow.style.justifyContent='center';
+  extra.appendChild(countLabel); extra.appendChild(btnRow);
+  const hint=document.createElement('div'); hint.className='controls-hint'; hint.style.marginTop='10px';
+  hint.textContent="À chaque tour, retire 1, 2 ou 3 bâtonnets. Attention : celui qui prend le DERNIER bâtonnet a perdu !";
+  extra.appendChild(hint);
+
+  function render(){
+    wrap.innerHTML='';
+    for(let i=0;i<count;i++){ const s=document.createElement('div'); s.style.width='10px'; s.style.height='46px'; s.style.background='linear-gradient(180deg,#e8c07d,#a9743a)'; s.style.borderRadius='4px'; s.style.boxShadow='0 3px 4px rgba(0,0,0,0.4)'; wrap.appendChild(s); }
+    countLabel.textContent = count+" bâtonnet"+(count>1?'s':'')+" restant"+(count>1?'s':'');
+    btnRow.innerHTML='';
+    const canPlay = !(Online.active && turn!==myRole) && !(AI.active && turn!=='p1');
+    for(let n=1;n<=3;n++){
+      const b=document.createElement('button'); b.className='btn btn-secondary'; b.style.width='auto'; b.style.padding='12px 18px';
+      b.textContent='Prendre '+n; b.disabled = n>count || !canPlay;
+      b.onclick=()=>playTake(n);
+      btnRow.appendChild(b);
+    }
+  }
+  function updateBanner(){
+    if(Online.active) setTurnBanner(turn===myRole ? "🟢 À toi de jouer" : "⏳ En attente de l'adversaire...");
+    else if(AI.active) setTurnBanner(turn==='p1' ? "🟢 À toi de jouer" : "🤖 L'IA réfléchit...");
+    else setTurnBanner(turn==='p1' ? `<span class="p1">${state.p1.name}</span> à toi de jouer` : `<span class="p2">${state.p2.name}</span> à toi de jouer`);
+  }
+  function playTake(n){
+    count -= n;
+    if(count<=0){
+      const loser=turn, winner=turn==='p1'?'p2':'p1';
+      count=0; render();
+      if(Online.active) onlineCommit({count,turn}, turn, winner);
+      else if(AI.active) setTimeout(()=>endGameAI(winner),400);
+      else setTimeout(()=>endGame(winner),400);
+      return;
+    }
+    turn = turn==='p1'?'p2':'p1';
+    render();
+    if(Online.active) onlineCommit({count,turn}, turn);
+    updateBanner();
+    if(AI.active && turn==='p2'){ setTimeout(()=>{ playTake(nimAIChoice(count, AI.difficulty)); }, 600); }
+  }
+  render(); updateBanner();
+  if(AI.active && turn==='p2') setTimeout(()=>{ playTake(nimAIChoice(count, AI.difficulty)); }, 600);
+  if(Online.active) onlineStartPolling((room)=>{ count=room.state.count; turn=room.turn; render(); updateBanner(); });
+}
+
+/* ================= LUDO (plateau classique) ================= */
+const LUDO_PATH = [[6,1],[6,2],[6,3],[6,4],[6,5],[6,6],[5,6],[4,6],[3,6],[2,6],[1,6],[0,6],[0,7],[0,8],[1,8],[2,8],[3,8],[4,8],[5,8],[6,8],[6,9],[6,10],[6,11],[6,12],[6,13],[6,14],[7,14],[8,14],[8,13],[8,12],[8,11],[8,10],[8,9],[8,8],[9,8],[10,8],[11,8],[12,8],[13,8],[14,8],[14,7],[14,6],[13,6],[12,6],[11,6],[10,6],[9,6],[8,6],[8,5],[8,4],[8,3],[8,2],[8,1],[8,0],[7,0],[6,0]];
+const LUDO_HOME_RED = [[7,1],[7,2],[7,3],[7,4],[7,5]];
+const LUDO_HOME_YELLOW = [[7,13],[7,12],[7,11],[7,10],[7,9]];
+const LUDO_HOME_GREEN = [[1,7],[2,7],[3,7],[4,7],[5,7]];
+const LUDO_HOME_BLUE = [[13,7],[12,7],[11,7],[10,7],[9,7]];
+const LUDO_SAFE = [0,14,28,42];
+function ludoCellType(r,c){
+  if(LUDO_PATH.some(p=>p[0]===r&&p[1]===c)) return 'path';
+  if(r===7&&c===7) return 'center';
+  if(r>=6&&r<=8&&c>=6&&c<=8) return 'mid';
+  if(LUDO_HOME_RED.some(p=>p[0]===r&&p[1]===c)) return 'home-red';
+  if(LUDO_HOME_YELLOW.some(p=>p[0]===r&&p[1]===c)) return 'home-yellow';
+  if(LUDO_HOME_GREEN.some(p=>p[0]===r&&p[1]===c)) return 'home-green';
+  if(LUDO_HOME_BLUE.some(p=>p[0]===r&&p[1]===c)) return 'home-blue';
+  if(r<=5&&c<=5) return 'yard-red';
+  if(r<=5&&c>=9) return 'yard-green';
+  if(r>=9&&c<=5) return 'yard-blue';
+  if(r>=9&&c>=9) return 'yard-yellow';
+  return 'plain';
+}
+const LUDO_ROLE_COLOR = {p1:'red', p2:'green', p3:'yellow', p4:'blue'};
+const LUDO_ROLE_START = {p1:0, p2:14, p3:28, p4:42};
+const LUDO_ROLE_HOME = {p1:LUDO_HOME_RED, p2:LUDO_HOME_GREEN, p3:LUDO_HOME_YELLOW, p4:LUDO_HOME_BLUE};
+const LUDO_ROLE_YARD_SLOTS = { p1:[[2,2],[2,3],[3,2],[3,3]], p2:[[2,10],[2,11],[3,10],[3,11]], p3:[[11,11],[11,12],[12,11],[12,12]], p4:[[11,2],[11,3],[12,2],[12,3]] };
+/* ---- LUDO À PLUSIEURS (2 à 4 joueurs, en ligne uniquement) ---- */
+function buildLudoLobbyInitialState(roles){
+  const players={};
+  roles.forEach(role=>{ players[role]={ tokens:[-1,-1,-1,-1] }; });
+  return {players, roles};
+}
+function endGameLudoLobby(winnerRole){
+  stopLudoLobbyPolling(); LudoLobby.active=false; state.matchLock=false;
+  const iWon = winnerRole===LudoLobby.myRole;
+  if(winnerRole===null){
+    state.online.bal += LudoLobby.stakeEach; saveState(); refreshHeader();
+    document.getElementById('result-title').textContent="🤝 Partie annulée";
+    document.getElementById('result-winner-name').textContent="Ta mise t'est remboursée.";
+    document.getElementById('result-amount').textContent=""; document.getElementById('result-breakdown').innerHTML="";
+    showResult(); return;
+  }
+  const pot = LudoLobby.stakeEach * LudoLobby.totalPlayers;
+  const cut = Math.round(pot*state.houseRate/100), net=pot-cut;
+  if(iWon){
+    state.online.bal += net; state.houseBal += cut; saveState(); refreshHeader();
+    document.getElementById('result-title').textContent="🏆 Tu as gagné !";
+    document.getElementById('result-winner-name').textContent = "Partie à "+LudoLobby.totalPlayers+" joueurs";
+    document.getElementById('result-amount').textContent="+"+net+" jetons";
+    document.getElementById('result-breakdown').innerHTML=`Ta mise <span>${LudoLobby.stakeEach}</span><br>Pot total (${LudoLobby.totalPlayers} joueurs) <span>${pot}</span><br>Commission (${state.houseRate}%) <span>-${cut}</span><br>Ton gain <span>${net}</span>`;
+  } else {
+    saveState(); refreshHeader();
+    document.getElementById('result-title').textContent="😔 Tu as perdu";
+    document.getElementById('result-winner-name').textContent="Un autre joueur a fini le premier.";
+    document.getElementById('result-amount').textContent="-"+LudoLobby.stakeEach+" jetons";
+    document.getElementById('result-breakdown').innerHTML=`Ta mise perdue <span>${LudoLobby.stakeEach}</span>`;
+  }
+  showResult();
+}
+function launchLudoLobbyGame(room){
+  document.getElementById('game-title').textContent = "Ludo ("+room.players.length+" joueurs)";
+  document.getElementById('board-area').innerHTML=""; document.getElementById('extra-area').innerHTML="";
+  showGame();
+  startLudoLobby(room);
+  const refreshBtn=document.createElement('button');
+  refreshBtn.className='btn-ghost'; refreshBtn.textContent='🔄 Actualiser maintenant';
+  refreshBtn.onclick=()=>{ LudoLobby.checkNow && LudoLobby.checkNow(); };
+  document.getElementById('extra-area').appendChild(refreshBtn);
+}
+function startLudoLobby(room){
+  const PATH_LEN=56, HOME_LEN=5, FINISH=PATH_LEN+HOME_LEN;
+  const roles = room.state.roles;
+  let players = JSON.parse(JSON.stringify(room.state.players));
+  let turn = room.turn;
+  let dice=null;
+  const myRole = LudoLobby.myRole;
+  const area=document.getElementById('board-area');
+  const boardCol=document.createElement('div'); boardCol.style.display='flex'; boardCol.style.flexDirection='column'; boardCol.style.alignItems='center'; boardCol.style.gap='10px';
+  const labelRow=document.createElement('div'); labelRow.style.display='flex'; labelRow.style.flexWrap='wrap'; labelRow.style.justifyContent='center'; labelRow.style.gap='10px'; labelRow.style.width='350px'; labelRow.style.fontSize='13px'; labelRow.style.fontWeight='700';
+  const colorEmoji={p1:'🔴',p2:'🟢',p3:'🟡',p4:'🔵'};
+  roles.forEach(role=>{ const tag=document.createElement('div'); tag.textContent=colorEmoji[role]+' '+(role===myRole?'Toi':'Joueur'); boardCol.dataset.dummy=''; labelRow.appendChild(tag); });
+  boardCol.appendChild(labelRow);
+  const wrap=document.createElement('div'); wrap.className='ludo-wrap';
+  const cellEls={};
+  for(let r=0;r<15;r++) for(let c=0;c<15;c++){ const d=document.createElement('div'); d.className='ludo-cell '+ludoCellType(r,c); wrap.appendChild(d); cellEls[r+'_'+c]=d; }
+  LUDO_SAFE.forEach(i=>{ const [r,c]=LUDO_PATH[i]; cellEls[r+'_'+c].classList.add('safe'); });
+  boardCol.appendChild(wrap);
+  area.appendChild(boardCol);
+
+  const extra=document.getElementById('extra-area');
+  const diceRow=document.createElement('div'); diceRow.className='dice-row';
+  const diceEl=document.createElement('div'); diceEl.className='dice'; diceEl.textContent='?';
+  const rollBtn=document.createElement('button'); rollBtn.className='btn btn-primary'; rollBtn.style.width='auto'; rollBtn.style.padding='13px 26px'; rollBtn.style.borderRadius='14px'; rollBtn.textContent='🎲 Lancer le dé';
+  diceRow.appendChild(diceEl); diceRow.appendChild(rollBtn); extra.appendChild(diceRow);
+  const tokenChooser=document.createElement('div'); tokenChooser.style.display='flex'; tokenChooser.style.gap='8px'; tokenChooser.style.justifyContent='center'; tokenChooser.style.marginTop='12px'; tokenChooser.style.flexWrap='wrap';
+  extra.appendChild(tokenChooser);
+  const hint=document.createElement('div'); hint.className='controls-hint';
+  hint.textContent="Un 6 permet de sortir un pion. Les cases ⭐ protègent tes pions. Le premier à ramener ses 4 pions au centre remporte tout le pot.";
+  extra.appendChild(hint);
+
+  function cellCoord(role, pos){
+    if(pos<0) return LUDO_ROLE_YARD_SLOTS[role][0];
+    if(pos<PATH_LEN) return LUDO_PATH[(LUDO_ROLE_START[role]+pos)%PATH_LEN];
+    const homeIdx=pos-PATH_LEN;
+    if(homeIdx>=HOME_LEN) return [7,7];
+    return LUDO_ROLE_HOME[role][homeIdx];
+  }
+  function render(){
+    Object.values(cellEls).forEach(el=>{ el.innerHTML=''; });
+    roles.forEach(role=>{
+      const pl=players[role];
+      pl.tokens.forEach((pos,idx)=>{
+        const coord = pos<0 ? LUDO_ROLE_YARD_SLOTS[role][idx] : cellCoord(role,pos);
+        if(!coord) return;
+        const tok=document.createElement('div'); tok.className='ludo-token '+LUDO_ROLE_COLOR[role]; tok.textContent=idx+1;
+        cellEls[coord[0]+'_'+coord[1]].appendChild(tok);
+      });
+    });
+  }
+  function updateBanner(){
+    setTurnBanner(turn===myRole ? "🟢 À toi de jouer" : `⏳ Tour de ${colorEmoji[turn]} — en attente...`);
+  }
+  async function pushState(newTurn, winnerRole){
+    const r = await jbRead(LudoLobby.roomId);
+    r.state = {players, roles}; r.turn=newTurn; r.updatedAt=Date.now();
+    if(winnerRole!==undefined){ r.status='finished'; r.winner=winnerRole; }
+    try{ await jbUpdate(LudoLobby.roomId, r); }catch(e){ alert("Problème de connexion, réessaie."); }
+  }
+  rollBtn.onclick=()=>{
+    if(turn!==myRole) return;
+    dice=1+Math.floor(Math.random()*6); diceEl.textContent=dice;
+    const pl=players[turn];
+    const movable=pl.tokens.map((pos,i)=>({i,pos})).filter(t=>{ if(t.pos===-1) return dice===6; if(t.pos>=FINISH) return false; return t.pos+dice<=FINISH; });
+    if(movable.length===0){ setTimeout(()=>nextTurn(dice!==6),500); return; }
+    tokenChooser.innerHTML='';
+    movable.forEach(t=>{
+      const b=document.createElement('button'); b.className='stake-chip'; b.style.padding='10px 14px';
+      b.textContent='Pion '+(t.i+1)+(t.pos===-1?' (sortir)':''); b.onclick=()=>moveToken(t.i);
+      tokenChooser.appendChild(b);
+    });
+    rollBtn.disabled=true;
+  };
+  function moveToken(idx){
+    const pl=players[turn];
+    if(pl.tokens[idx]===-1) pl.tokens[idx]=0; else pl.tokens[idx]+=dice;
+    if(pl.tokens[idx]<PATH_LEN){
+      const myAbsIndex=(LUDO_ROLE_START[turn]+pl.tokens[idx])%PATH_LEN;
+      const isSafe = LUDO_SAFE.includes(myAbsIndex);
+      if(!isSafe){
+        roles.forEach(otherRole=>{
+          if(otherRole===turn) return;
+          players[otherRole].tokens.forEach((pos,i)=>{
+            if(pos>=0 && pos<PATH_LEN){ const oIdx=(LUDO_ROLE_START[otherRole]+pos)%PATH_LEN; if(oIdx===myAbsIndex) players[otherRole].tokens[i]=-1; }
+          });
+        });
+      }
+    }
+    tokenChooser.innerHTML=''; render();
+    if(pl.tokens.every(p=>p>=FINISH)){ pushState(turn, turn); return; }
+    nextTurn(dice!==6);
+  }
+  function nextTurn(swap){
+    rollBtn.disabled=false;
+    if(swap){ const idx=roles.indexOf(turn); turn=roles[(idx+1)%roles.length]; }
+    pushState(turn);
+    updateBanner();
+  }
+  render(); updateBanner();
+  LudoLobby.lastSeen=0;
+  async function check(){
+    try{
+      const room=await jbRead(LudoLobby.roomId);
+      if(room.updatedAt!==LudoLobby.lastSeen){
+        LudoLobby.lastSeen=room.updatedAt;
+        players=JSON.parse(JSON.stringify(room.state.players)); turn=room.turn; tokenChooser.innerHTML=''; render(); updateBanner();
+        if(room.status==='finished' && !LudoLobby.payoutApplied){ LudoLobby.payoutApplied=true; setTimeout(()=>endGameLudoLobby(room.winner),350); }
+      }
+    }catch(e){}
+  }
+  LudoLobby.checkNow=check; check();
+  LudoLobby.pollHandle=setInterval(check, 1500);
+}
+
+GAME_ENGINES.ludo = {
+  initialState(){ return { players:{ p1:{start:0, tokens:[-1,-1,-1,-1], color:'red'}, p2:{start:28, tokens:[-1,-1,-1,-1], color:'yellow'} }, turn:'p1' }; },
+  start(remoteRoom){ startLudo(remoteRoom); }
+};
+function startLudo(remoteRoom){
+  const PATH_LEN=56, HOME_LEN=5, FINISH=PATH_LEN+HOME_LEN;
+  const init = remoteRoom ? remoteRoom.state : GAME_ENGINES.ludo.initialState();
+  let players = JSON.parse(JSON.stringify(init.players));
+  let turn = remoteRoom ? remoteRoom.turn : init.turn;
+  let dice=null;
+  const myRole = Online.active ? (Online.role==='host'?'p1':'p2') : null;
+  const area=document.getElementById('board-area');
+  const boardCol=document.createElement('div'); boardCol.style.display='flex'; boardCol.style.flexDirection='column'; boardCol.style.alignItems='center'; boardCol.style.gap='10px';
+  const labelRow=document.createElement('div'); labelRow.style.display='flex'; labelRow.style.justifyContent='space-between'; labelRow.style.width='350px'; labelRow.style.fontSize='14px'; labelRow.style.fontWeight='700'; labelRow.style.padding='0 4px';
+  const p2Tag=document.createElement('div'); p2Tag.style.color='#E8C13A'; p2Tag.innerHTML=`🟡 ${Online.active ? (myRole==='p2'?'Toi':'Adversaire') : state.p2.name}`;
+  const p1Tag=document.createElement('div'); p1Tag.style.color='#E15A5A'; p1Tag.innerHTML=`🔴 ${Online.active ? (myRole==='p1'?'Toi':'Adversaire') : state.p1.name}`;
+  labelRow.appendChild(p1Tag); labelRow.appendChild(p2Tag);
+  boardCol.appendChild(labelRow);
+  const wrap=document.createElement('div'); wrap.className='ludo-wrap';
+  const cellEls={};
+  for(let r=0;r<15;r++) for(let c=0;c<15;c++){ const d=document.createElement('div'); d.className='ludo-cell '+ludoCellType(r,c); wrap.appendChild(d); cellEls[r+'_'+c]=d; }
+  LUDO_SAFE.forEach(i=>{ const [r,c]=LUDO_PATH[i]; cellEls[r+'_'+c].classList.add('safe'); });
+  boardCol.appendChild(wrap);
+  area.appendChild(boardCol);
+  const extra=document.getElementById('extra-area');
+  const diceRow=document.createElement('div'); diceRow.className='dice-row';
+  const diceEl=document.createElement('div'); diceEl.className='dice'; diceEl.textContent='?';
+  const rollBtn=document.createElement('button'); rollBtn.className='btn btn-primary'; rollBtn.style.width='auto'; rollBtn.style.padding='13px 26px'; rollBtn.style.borderRadius='14px'; rollBtn.textContent='🎲 Lancer le dé';
+  diceRow.appendChild(diceEl); diceRow.appendChild(rollBtn); extra.appendChild(diceRow);
+  const tokenChooser=document.createElement('div'); tokenChooser.style.display='flex'; tokenChooser.style.gap='8px'; tokenChooser.style.justifyContent='center'; tokenChooser.style.marginTop='12px'; tokenChooser.style.flexWrap='wrap';
+  extra.appendChild(tokenChooser);
+  const hint=document.createElement('div'); hint.className='controls-hint';
+  hint.textContent="Un 6 permet de sortir un pion de la réserve. Les cases ⭐ sont des zones sûres : un pion posé dessus ne peut pas être mangé par l'adversaire.";
+  extra.appendChild(hint);
+
+  function cellCoord(role, pos){
+    const pl=players[role];
+    if(pos<0) return null;
+    if(pos<PATH_LEN){ return LUDO_PATH[(pl.start+pos)%PATH_LEN]; }
+    const homeIdx=pos-PATH_LEN;
+    if(homeIdx>=HOME_LEN) return [7,7];
+    return pl.color==='red' ? LUDO_HOME_RED[homeIdx] : LUDO_HOME_YELLOW[homeIdx];
+  }
+  const YARD_SLOTS = { red:[[2,2],[2,3],[3,2],[3,3]], yellow:[[11,11],[11,12],[12,11],[12,12]] };
+  function render(){
+    Object.values(cellEls).forEach(el=>{ el.innerHTML=''; });
+    ['p1','p2'].forEach(role=>{
+      const pl=players[role];
+      pl.tokens.forEach((pos,idx)=>{
+        const coord = pos<0 ? YARD_SLOTS[pl.color][idx] : (pos>=FINISH ? [7,7] : cellCoord(role,pos));
+        if(!coord) return;
+        const tok=document.createElement('div'); tok.className='ludo-token '+pl.color; tok.textContent=idx+1;
+        cellEls[coord[0]+'_'+coord[1]].appendChild(tok);
+      });
+    });
+  }
+  function updateBanner(){
+    if(Online.active) setTurnBanner(turn===myRole ? "🟢 À toi de jouer" : "⏳ En attente de l'adversaire...");
+    else if(AI.active) setTurnBanner(turn==='p1' ? "🟢 À toi de jouer" : "🤖 L'IA réfléchit...");
+    else setTurnBanner(turn==='p1' ? `<span class="p1">${state.p1.name} (rouge)</span> à toi de jouer` : `<span class="p2">${state.p2.name} (jaune)</span> à toi de jouer`);
+  }
+  rollBtn.onclick=()=>{
+    if(Online.active && turn!==myRole) return;
+    if(AI.active && turn==='p2') return;
+    doRoll();
+  };
+  function doRoll(){
+    dice=1+Math.floor(Math.random()*6); diceEl.textContent=dice;
+    const pl=players[turn];
+    const movable=pl.tokens.map((pos,i)=>({i,pos})).filter(t=>{ if(t.pos===-1) return dice===6; if(t.pos>=FINISH) return false; return t.pos+dice<=FINISH; });
+    if(movable.length===0){ setTimeout(()=>nextTurn(dice!==6),500); return; }
+    if(AI.active && turn==='p2'){
+      const choice=aiPickLudoMove(players, turn, movable, dice, AI.difficulty, PATH_LEN);
+      setTimeout(()=>moveToken(choice),500);
+      return;
+    }
+    tokenChooser.innerHTML='';
+    movable.forEach(t=>{
+      const b=document.createElement('button'); b.className='stake-chip'; b.style.padding='10px 14px';
+      b.textContent='Pion '+(t.i+1)+(t.pos===-1?' (sortir)':''); b.onclick=()=>moveToken(t.i);
+      tokenChooser.appendChild(b);
+    });
+    rollBtn.disabled=true;
+  }
+  function maybeAiTurn(){
+    if(!AI.active || turn!=='p2') return;
+    setTimeout(doRoll, 600);
+  }
+  function moveToken(idx){
+    const pl=players[turn], otherRole=turn==='p1'?'p2':'p1', other=players[otherRole];
+    if(pl.tokens[idx]===-1) pl.tokens[idx]=0; else pl.tokens[idx]+=dice;
+    if(pl.tokens[idx]<PATH_LEN){
+      const myAbsIndex=(pl.start+pl.tokens[idx])%PATH_LEN;
+      const absCoord=LUDO_PATH[myAbsIndex];
+      const isSafe = LUDO_SAFE.includes(myAbsIndex);
+      if(!isSafe){
+        other.tokens.forEach((pos,i)=>{ if(pos>=0 && pos<PATH_LEN){ const oc=LUDO_PATH[(other.start+pos)%PATH_LEN]; if(oc[0]===absCoord[0] && oc[1]===absCoord[1]) other.tokens[i]=-1; } });
+      }
+    }
+    tokenChooser.innerHTML=''; render();
+    if(pl.tokens.every(p=>p>=FINISH)){
+      if(Online.active) onlineCommit({players,turn}, turn, turn); else finishSolo(turn);
+      return;
+    }
+    nextTurn(dice!==6);
+  }
+  function nextTurn(swap){
+    rollBtn.disabled=false;
+    if(swap) turn=turn==='p1'?'p2':'p1';
+    if(Online.active) onlineCommit({players,turn}, turn);
+    updateBanner();
+    maybeAiTurn();
+  }
+  render(); updateBanner();
+  maybeAiTurn();
+  if(Online.active) onlineStartPolling((room)=>{ players=JSON.parse(JSON.stringify(room.state.players)); turn=room.turn; tokenChooser.innerHTML=''; render(); updateBanner(); });
+}
+
+function aiPickLudoMove(players, aiRole, movable, dice, difficulty, PATH_LEN){
+  if(difficulty==='easy') return movable[Math.floor(Math.random()*movable.length)].i;
+  const pl=players[aiRole], otherRole=aiRole==='p1'?'p2':'p1', other=players[otherRole];
+  const bringOut = movable.find(t=>t.pos===-1);
+  if(bringOut) return bringOut.i;
+  if(difficulty==='hard'){
+    for(const t of movable){
+      const newPos=t.pos+dice;
+      if(newPos<PATH_LEN){
+        const absIdx=(pl.start+newPos)%PATH_LEN;
+        const captures = other.tokens.some(op=> op>=0 && op<PATH_LEN && (other.start+op)%PATH_LEN===absIdx && !LUDO_SAFE.includes(absIdx));
+        if(captures) return t.i;
+      }
+    }
+  }
+  const sorted=movable.slice().sort((a,b)=>b.pos-a.pos);
+  return sorted[0].i;
+}
+/* =================== INIT =================== */
+loadState().then(()=> setMode(state.mode||'local'));
+</script>
+</body>
+</html>
